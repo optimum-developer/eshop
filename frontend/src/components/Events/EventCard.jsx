@@ -13,6 +13,7 @@ const EventCard = ({ active, data }) => {
 
   const addToCartHandler = (data) => {
     const isItemExists = cart && cart.find((i) => i._id === data._id);
+
     if (isItemExists) {
       toast.error("Item already in cart!");
     } else {
@@ -24,7 +25,7 @@ const EventCard = ({ active, data }) => {
         toast.success("Item added to cart successfully!");
       }
     }
-  }
+  };
   return (
     <div
       className={`w-full block bg-white rounded-lg ${
@@ -56,7 +57,12 @@ const EventCard = ({ active, data }) => {
           <Link to={`/product/${data._id}?isEvent=true`}>
             <div className={`${styles.button} text-[#fff]`}>See Details</div>
           </Link>
-          <div className={`${styles.button} text-[#fff] ml-5`} onClick={() => addToCartHandler(data)}>Add to cart</div>
+          <div
+            className={`${styles.button} text-[#fff] ml-5`}
+            onClick={() => addToCartHandler(data)}
+          >
+            Add to cart
+          </div>
         </div>
       </div>
     </div>

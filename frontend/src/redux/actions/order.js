@@ -1,7 +1,7 @@
 import axios from "axios";
 import { server } from "../../server";
 
-// get all orders of user
+// get all orders of user by id
 export const getAllOrdersOfUser = (userId) => async (dispatch) => {
   try {
     dispatch({
@@ -11,6 +11,7 @@ export const getAllOrdersOfUser = (userId) => async (dispatch) => {
     const { data } = await axios.get(
       `${server}/order/get-all-orders/${userId}`
     );
+    console.log("action");
 
     dispatch({
       type: "getAllOrdersUserSuccess",
@@ -24,6 +25,62 @@ export const getAllOrdersOfUser = (userId) => async (dispatch) => {
   }
 };
 
+// get all the orders of all users
+export const getAllOrdersOfAllUsers = () => async (dispatch) => {
+  try {
+    dispatch({
+      type: "getAllUsersOderRequest",
+    });
+
+    const { data } = await axios.get(`${server}/order/get-all-orders`);
+    dispatch({
+      type: "getAllUsersOderSuccess",
+      payload: data.orders,
+    });
+  } catch (error) {
+    dispatch({
+      type: "getAllUsersOderFailed",
+      payload: error.response.data.message,
+    });
+  }
+};
+
+// get all the product from order list
+export const getProductListFromOrderList = () => async (dispatch) => {
+  try {
+    dispatch({
+      type: "getProductListFromOrderListRequest",
+    });
+
+    const { data } = await axios.get(`${server}/order/get-all-orders`);
+
+    const productListWithQty = data.orders.map((order) => {
+      return {
+        _id: order.cart[0]._id,
+        qty: order.cart[0].qty,
+      };
+    });
+
+    const productList = [];
+
+    productListWithQty.forEach((element) => {
+      let count = 0;
+      while (count < element.qty) {
+        productList.push(element._id);
+        count++;
+      }
+    });
+    dispatch({
+      type: "getProductListFromOrderListSuccess",
+      payload: productList,
+    });
+  } catch (error) {
+    dispatch({
+      type: "getProductListFromOrderListFailed",
+      payload: error.response.data.message,
+    });
+  }
+};
 // get all orders of seller
 export const getAllOrdersOfShop = (shopId) => async (dispatch) => {
   try {

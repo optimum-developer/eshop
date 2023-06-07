@@ -22,7 +22,10 @@ import { Country, State } from "country-state-city";
 import { useEffect } from "react";
 import { toast } from "react-toastify";
 import axios from "axios";
-import { getAllOrdersOfUser } from "../../redux/actions/order";
+import {
+  getAllOrdersOfUser,
+  getAllOrdersOfAllUsers,
+} from "../../redux/actions/order";
 
 const ProfileContent = ({ active }) => {
   const { user, error, successMessage } = useSelector((state) => state.user);
@@ -65,8 +68,8 @@ const ProfileContent = ({ active }) => {
         withCredentials: true,
       })
       .then((response) => {
-         dispatch(loadUser());
-         toast.success("avatar updated successfully!");
+        dispatch(loadUser());
+        toast.success("avatar updated successfully!");
       })
       .catch((error) => {
         toast.error(error);
@@ -199,11 +202,14 @@ const ProfileContent = ({ active }) => {
 
 const AllOrders = () => {
   const { user } = useSelector((state) => state.user);
-  const { orders } = useSelector((state) => state.order);
+  const { orders,allOrders } = useSelector((state) => state.order);
   const dispatch = useDispatch();
+  console.log("profile content orders :", orders);
 
+  console.log("profile content all orders :", allOrders);
   useEffect(() => {
     dispatch(getAllOrdersOfUser(user._id));
+    dispatch(getAllOrdersOfAllUsers());
   }, []);
 
   const columns = [
@@ -291,7 +297,8 @@ const AllRefundOrders = () => {
     dispatch(getAllOrdersOfUser(user._id));
   }, []);
 
-  const eligibleOrders = orders && orders.filter((item) => item.status === "Processing refund");
+  const eligibleOrders =
+    orders && orders.filter((item) => item.status === "Processing refund");
 
   const columns = [
     { field: "id", headerName: "Order ID", minWidth: 150, flex: 0.7 },
@@ -347,7 +354,7 @@ const AllRefundOrders = () => {
   const row = [];
 
   eligibleOrders &&
-   eligibleOrders.forEach((item) => {
+    eligibleOrders.forEach((item) => {
       row.push({
         id: item._id,
         itemsQty: item.cart.length,

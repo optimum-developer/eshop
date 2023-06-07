@@ -5,11 +5,12 @@ const initialState = {
 };
 
 export const orderReducer = createReducer(initialState, {
-  // get all orders of user
+  // get all orders of user by userId
   getAllOrdersUserRequest: (state) => {
     state.isLoading = true;
   },
   getAllOrdersUserSuccess: (state, action) => {
+    console.log("reducers");
     state.isLoading = false;
     state.orders = action.payload;
   },
@@ -17,7 +18,35 @@ export const orderReducer = createReducer(initialState, {
     state.isLoading = false;
     state.error = action.payload;
   },
-  
+
+  //  get all the user's order details
+  getAllUsersOderRequest: (state) => {
+    state.isLoading = true;
+  },
+
+  getAllUsersOderSuccess: (state, action) => {
+    state.isLoading = false;
+    state.allOrders = action.payload;
+  },
+  getAllUsersOderFailed: (state) => {
+    state.isLoading = false;
+  },
+
+  // get product list from orders
+
+  getProductListFromOrderListRequest: (state) => {
+    state.isLoading = true;
+  },
+
+  getProductListFromOrderListSuccess: (state, action) => {
+    state.isLoading = false;
+    state.productList = action.payload;
+  },
+
+  getProductListFromOrderListFailed: (state) => {
+    state.isLoading = false;
+  },
+
   // get all orders of shop
   getAllOrdersShopRequest: (state) => {
     state.isLoading = true;

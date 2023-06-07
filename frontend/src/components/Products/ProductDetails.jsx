@@ -14,6 +14,8 @@ import {
   addToWishlist,
   removeFromWishlist,
 } from "../../redux/actions/wishlist";
+
+import { getAllOrdersOfAllUsers } from "../../redux/actions/order";
 import { addTocart } from "../../redux/actions/cart";
 import { toast } from "react-toastify";
 import Ratings from "./Ratings";
@@ -29,8 +31,10 @@ const ProductDetails = ({ data }) => {
   const [select, setSelect] = useState(0);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
   useEffect(() => {
     dispatch(getAllProductsShop(data && data?.shop._id));
+    dispatch(getAllOrdersOfAllUsers());
     if (wishlist && wishlist.find((i) => i._id === data?._id)) {
       setClick(true);
     } else {
@@ -85,10 +89,9 @@ const ProductDetails = ({ data }) => {
       0
     );
 
-  const avg =  totalRatings / totalReviewsLength || 0;
+  const avg = totalRatings / totalReviewsLength || 0;
 
   const averageRating = avg.toFixed(2);
-
 
   const handleMessageSubmit = async () => {
     if (isAuthenticated) {
@@ -256,7 +259,10 @@ const ProductDetailsInfo = ({
   averageRating,
 }) => {
   const [active, setActive] = useState(1);
-
+  // console.log("data", data);
+  // console.log("products", products);
+  // console.log("totalReviewsLength", totalReviewsLength);
+  // console.log("averageRating", averageRating);
   return (
     <div className="bg-[#f5f6fb] px-3 800px:px-10 py-2 rounded">
       <div className="w-full flex justify-between border-b pt-10 pb-2">
@@ -311,25 +317,25 @@ const ProductDetailsInfo = ({
       {active === 2 ? (
         <div className="w-full min-h-[40vh] flex flex-col items-center py-3 overflow-y-scroll">
           {data &&
-            data.reviews.map((item, index) => (
-              <div className="w-full flex my-2">
+            data?.reviews?.map((item, index) => (
+              <div className="w-full flex my-2" key={index}>
                 <img
-                  src={`${backend_url}/${item.user.avatar}`}
+                  src={`${backend_url}/${item?.user?.avatar}`}
                   alt=""
                   className="w-[50px] h-[50px] rounded-full"
                 />
                 <div className="pl-2 ">
                   <div className="w-full flex items-center">
-                    <h1 className="font-[500] mr-3">{item.user.name}</h1>
+                    <h1 className="font-[500] mr-3">{item?.user?.name}</h1>
                     <Ratings rating={data?.ratings} />
                   </div>
-                  <p>{item.comment}</p>
+                  <p>{item?.comment}</p>
                 </div>
               </div>
             ))}
 
           <div className="w-full flex justify-center">
-            {data && data.reviews.length === 0 && (
+            {data && data?.reviews?.length === 0 && (
               <h5>No Reviews have for this product!</h5>
             )}
           </div>

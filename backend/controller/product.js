@@ -117,9 +117,13 @@ router.put(
   isAuthenticated,
   catchAsyncErrors(async (req, res, next) => {
     try {
+      console.log("inside review black tshirt test");
       const { user, rating, comment, productId, orderId } = req.body;
+      console.log("productId", productId);
 
       const product = await Product.findById(productId);
+      // console.log("req.body :", req.body);
+      console.log("product", product);
 
       const review = {
         user,
@@ -131,6 +135,7 @@ router.put(
       const isReviewed = product.reviews.find(
         (rev) => rev.user._id === req.user._id
       );
+      console.log("isReviewed", isReviewed);
 
       if (isReviewed) {
         product.reviews.forEach((rev) => {

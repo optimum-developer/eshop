@@ -49,12 +49,31 @@ router.post(
   })
 );
 
-// get all orders of user
+// get all orders of user by Id
 router.get(
   "/get-all-orders/:userId",
   catchAsyncErrors(async (req, res, next) => {
     try {
       const orders = await Order.find({ "user._id": req.params.userId }).sort({
+        createdAt: -1,
+      });
+
+      res.status(200).json({
+        success: true,
+        orders,
+      });
+    } catch (error) {
+      return next(new ErrorHandler(error.message, 500));
+    }
+  })
+);
+
+// get all orders of user
+router.get(
+  "/get-all-orders",
+  catchAsyncErrors(async (req, res, next) => {
+    try {
+      const orders = await Order.find({}).sort({
         createdAt: -1,
       });
 
@@ -111,7 +130,7 @@ router.put(
       if (req.body.status === "Delivered") {
         order.deliveredAt = Date.now();
         order.paymentInfo.status = "Succeeded";
-        const serviceCharge = order.totalPrice * .10;
+        const serviceCharge = order.totalPrice * 0.1;
         await updateSellerInfo(order.totalPrice - serviceCharge);
       }
 
@@ -133,7 +152,7 @@ router.put(
 
       async function updateSellerInfo(amount) {
         const seller = await Shop.findById(req.seller.id);
-        
+
         seller.availableBalance = amount;
 
         await seller.save();

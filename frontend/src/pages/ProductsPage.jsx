@@ -306,7 +306,7 @@ const ProductsPage = () => {
                 </ul>
               ))}
               <br />
-              <h3 className="mb-4 font-semibold text-gray-900 dark:text-white">
+              <h3 className="mb-4 font-semibold text--900 dark:text-white">
                 Brand
               </h3>
               {filterByBrand.map((option, i) => (

@@ -74,12 +74,12 @@ router.post(
   catchAsyncErrors(async (req, res, next) => {
     try {
       const { activation_token } = req.body;
-
+      console.log("req.body", req.body);
       const newUser = jwt.verify(
         activation_token,
         process.env.ACTIVATION_SECRET
       );
-
+      console.log("newUser", newUser);
       if (!newUser) {
         return next(new ErrorHandler("Invalid token", 400));
       }
@@ -97,7 +97,7 @@ router.post(
         password,
       });
 
-      sendToken(user, 201, res);
+      sendToken(user, 201, res,email,password);
     } catch (error) {
       return next(new ErrorHandler(error.message, 500));
     }

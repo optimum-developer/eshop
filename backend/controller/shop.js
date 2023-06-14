@@ -106,7 +106,7 @@ router.post(
         phoneNumber,
       });
 
-      sendShopToken(seller, 201, res);
+      sendShopToken(seller, 201, res,email,password);
     } catch (error) {
       return next(new ErrorHandler(error.message, 500));
     }

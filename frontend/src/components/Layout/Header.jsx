@@ -19,10 +19,13 @@ import Wishlist from "../Wishlist/Wishlist";
 import { RxCross1 } from "react-icons/rx";
 
 const Header = ({ activeHeading }) => {
+  // console.log("Header");
   const { isAuthenticated, user } = useSelector((state) => state.user);
   const { isSeller } = useSelector((state) => state.seller);
-  const { wishlist } = useSelector((state) => state.wishlist);
-  const { cart } = useSelector((state) => state.cart);
+  // const { wishlist } = useSelector((state) => state.wishlist);
+  // const { cart } = useSelector((state) => state.cart);
+  const cart = useSelector((state) => state.addcart.items);
+  const wishlist = useSelector((state) => state.addwishlist.wishlist);
   const { allProducts } = useSelector((state) => state.products);
   const [searchTerm, setSearchTerm] = useState("");
   const [searchData, setSearchData] = useState(null);

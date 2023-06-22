@@ -6,25 +6,41 @@ import styles from "../../styles/styles";
 import { Link } from "react-router-dom";
 import { backend_url } from "../../server";
 import { useDispatch, useSelector } from "react-redux";
-import { addTocart, removeFromCart } from "../../redux/actions/cart";
 import { toast } from "react-toastify";
-
+import { server } from "../../server";
+import axios from "axios";
+import { setCartOnLoad } from "../../redux/reducers/addtocart";
 const Cart = ({ setOpenCart }) => {
-  const { cart } = useSelector((state) => state.cart);
-  const dispatch = useDispatch();
+  // const { cart } = useSelector((state) => state.cart);
+  const cart = useSelector((state) => state.addcart.items);
+  const { user } = useSelector((state) => state.user);
+  const userId = user?._id;
 
-  const removeFromCartHandler = (data) => {
-    dispatch(removeFromCart(data));
+  const productCart = cart.map((el) => el.product);
+
+  const dispatch = useDispatch();
+  // return
+  // return
+  const removeFromCartHandler = async (data) => {
+    const cart = await axios.delete(`${server}/cart/delete-cart-item`, {
+      data: {
+        productId: data._id,
+      },
+    });
+
+    const cartData = await axios.post(`${server}/cart/get-cart-item`, {
+      userId: userId,
+    });
+    dispatch(setCartOnLoad(cartData.data.cartByUserId));
+    toast.success("Item deleted successfuly");
   };
 
-  const totalPrice = cart.reduce(
+  const totalPrice = productCart.reduce(
     (acc, item) => acc + item.qty * item.discountPrice,
     0
   );
 
-  const quantityChangeHandler = (data) => {
-    dispatch(addTocart(data));
-  };
+  const quantityChangeHandler = (data) => {};
 
   return (
     <div className="fixed top-0 left-0 w-full bg-[#0000004b] h-screen z-10">
@@ -61,11 +77,12 @@ const Cart = ({ setOpenCart }) => {
               {/* cart Single Items */}
               <br />
               <div className="w-full border-t">
-                {cart &&
-                  cart.map((i, index) => (
+                {productCart &&
+                  productCart.map((i, index) => (
                     <CartSingle
                       key={index}
                       data={i}
+                      userId={userId}
                       quantityChangeHandler={quantityChangeHandler}
                       removeFromCartHandler={removeFromCartHandler}
                     />
@@ -92,24 +109,42 @@ const Cart = ({ setOpenCart }) => {
   );
 };
 
-const CartSingle = ({ data, quantityChangeHandler, removeFromCartHandler }) => {
-  const [value, setValue] = useState(data.qty);
-  const totalPrice = data.discountPrice * value;
+const CartSingle = ({
+  data,
+  quantityChangeHandler,
+  removeFromCartHandler,
+  userId,
+}) => {
+  const [value, setValue] = useState(data?.qty);
+  const totalPrice = data?.discountPrice * value;
 
-  const increment = (data) => {
-    if (data.stock < value) {
+  const increment = async (data) => {
+    // return
+
+    if (data?.stock < value) {
       toast.error("Product stock limited!");
     } else {
       setValue(value + 1);
-      const updateCartData = { ...data, qty: value + 1 };
-      quantityChangeHandler(updateCartData);
+      // const updateCartData = { ...data, qty: value + 1 };
+      const cartUpdate = await axios.put(`${server}/cart/update-cart-qty`, {
+        userId: userId,
+        productId: data._id,
+        qty: value + 1,
+      });
+
+      // quantityChangeHandler(updateCartData);
     }
   };
 
-  const decrement = (data) => {
+  const decrement = async (data) => {
     setValue(value === 1 ? 1 : value - 1);
     const updateCartData = { ...data, qty: value === 1 ? 1 : value - 1 };
-    quantityChangeHandler(updateCartData);
+    // quantityChangeHandler(updateCartData);
+    const cartUpdate = await axios.put(`${server}/cart/update-cart-qty`, {
+      userId: userId,
+      productId: data._id,
+      qty: value - 1,
+    });
   };
 
   return (
@@ -122,7 +157,7 @@ const CartSingle = ({ data, quantityChangeHandler, removeFromCartHandler }) => {
           >
             <HiPlus size={18} color="#fff" />
           </div>
-          <span className="pl-[10px]">{data.qty}</span>
+          <span className="pl-[10px]">{value}</span>
           <div
             className="bg-[#a7abb14f] rounded-full w-[25px] h-[25px] flex items-center justify-center cursor-pointer"
             onClick={() => decrement(data)}
@@ -136,9 +171,9 @@ const CartSingle = ({ data, quantityChangeHandler, removeFromCartHandler }) => {
           className="w-[130px] h-min ml-2 mr-2 rounded-[5px]"
         />
         <div className="pl-[5px]">
-          <h1>{data.name}</h1>
+          <h1>{data?.name}</h1>
           <h4 className="font-[400] text-[15px] text-[#00000082]">
-            ${data.discountPrice} * {value}
+            ${data?.discountPrice} * {value}
           </h4>
           <h4 className="font-[600] text-[17px] pt-[3px] text-[#d02222] font-Roboto">
             US${totalPrice}

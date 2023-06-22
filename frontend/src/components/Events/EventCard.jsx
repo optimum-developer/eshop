@@ -22,7 +22,7 @@ const EventCard = ({ active, data }) => {
       } else {
         const cartData = { ...data, qty: 1 };
         dispatch(addTocart(cartData));
-        toast.success("Item added to cart successfully!");
+        toast.success("Item added to cart successfullyt !");
       }
     }
   };

@@ -9,20 +9,99 @@ import { useDispatch, useSelector } from "react-redux";
 import { removeFromWishlist } from "../../redux/actions/wishlist";
 import { backend_url } from "../../server";
 import { addTocart } from "../../redux/actions/cart";
+import { toast } from "react-toastify";
+import axios from "axios";
+import { server } from "./../../server";
+import useGetWishlist from "../../utils/useGetWishlist";
+import { setWishlistOnload } from "../../redux/reducers/addtowishlist";
+import { setCartOnLoad } from "../../redux/reducers/addtocart";
 
 const Wishlist = ({ setOpenWishlist }) => {
-  const { wishlist } = useSelector((state) => state.wishlist);
-  const dispatch = useDispatch();
+  // const { wishlist } = useSelector((state) => state.wishlist);
+  const { wishlist } = useSelector((state) => state.addwishlist);
+  const { user } = useSelector((state) => state.user);
+  const { items } = useSelector((state) => state.addcart);
 
-  const removeFromWishlistHandler = (data) => {
-    dispatch(removeFromWishlist(data));
+  const cartProductList = items.map((el) => el.product);
+  const wishlistProduct = wishlist.map((el) => el.product);
+
+  console.log("wishlistProduct ", wishlistProduct);
+
+  const dispatch = useDispatch();
+  const wishlistData = useGetWishlist();
+  const userId = user._id;
+  console.log("wishlistItems ", userId, wishlist);
+
+  const removeFromWishlistHandler = async (data) => {
+    try {
+      const wishlistData = await axios.delete(
+        `${server}/wishlist/delete-wishlist-item`,
+        {
+          data: {
+            productId: data._id,
+          },
+        }
+      );
+      toast.success("item deleted from wishlist");
+    } catch (error) {
+      console.log(error);
+    }
+
+    // update redux initial state
+    const wishlistData = await axios.post(
+      `${server}/wishlist/get-wishlist-item`,
+      {
+        userId: userId,
+      }
+    );
+    dispatch(setWishlistOnload(wishlistData.data.wishlistByUserId));
+    // dispatch(removeFromWishlist(data));
   };
 
-  const addToCartHandler = (data) => {
-    const newData = {...data, qty:1};
-    dispatch(addTocart(newData));
-    setOpenWishlist(false);
-  }
+  const addToCartHandler = async (data) => {
+    const id = data._id;
+    const isItemExists =
+      cartProductList && cartProductList.find((i) => i._id === id);
+    if (isItemExists) {
+      toast.error("Item already in cart!");
+    } else {
+      if (data.stock < 1) {
+        toast.error("Product stock limited!");
+      } else {
+        try {
+          const cart = await axios.post(`${server}/cart/add-to-cart`, {
+            userId: user._id,
+            product: { ...data, qty: 1 },
+          });
+
+          const cartData = await axios.post(`${server}/cart/get-cart-item`, {
+            userId: userId,
+          });
+          dispatch(setCartOnLoad(cartData.data.cartByUserId));
+          toast.success("Item added to cart successfully!");
+
+          // update redux initial state
+          const wishlistData = await axios.post(
+            `${server}/wishlist/get-wishlist-item`,
+            {
+              userId: userId,
+            }
+          );
+          dispatch(setWishlistOnload(wishlistData.data.wishlistByUserId));
+        } catch (error) {
+          toast.error(error.response.data.message);
+        }
+      }
+    }
+
+    // return;
+
+    // dispatch(removeFromWishlist(data));
+
+    // const newData = { ...data, qty: 1 };
+    // dispatch(addTocart(newData));
+    // setOpenWishlist(false);
+  };
 
   return (
     <div className="fixed top-0 left-0 w-full bg-[#0000004b] h-screen z-10">
@@ -59,9 +138,14 @@ const Wishlist = ({ setOpenWishlist }) => {
               {/* cart Single Items */}
               <br />
               <div className="w-full border-t">
-                {wishlist &&
-                  wishlist.map((i, index) => (
-                    <CartSingle key={index} data={i} removeFromWishlistHandler={removeFromWishlistHandler} addToCartHandler={addToCartHandler} />
+                {wishlistProduct &&
+                  wishlistProduct.map((i, index) => (
+                    <CartSingle
+                      key={index}
+                      data={i}
+                      removeFromWishlistHandler={removeFromWishlistHandler}
+                      addToCartHandler={addToCartHandler(i)}
+                    />
                   ))}
               </div>
             </div>
@@ -72,15 +156,16 @@ const Wishlist = ({ setOpenWishlist }) => {
   );
 };
 
-const CartSingle = ({ data,removeFromWishlistHandler,addToCartHandler }) => {
+const CartSingle = ({ data, removeFromWishlistHandler, addToCartHandler }) => {
   const [value, setValue] = useState(1);
   const totalPrice = data.discountPrice * value;
 
   return (
     <div className="border-b p-4">
       <div className="w-full 800px:flex items-center">
-        <RxCross1 className="cursor-pointer 800px:mb-['unset'] 800px:ml-['unset'] mb-2 ml-2"
-        onClick={() => removeFromWishlistHandler(data)}
+        <RxCross1
+          className="cursor-pointer 800px:mb-['unset'] 800px:ml-['unset'] mb-2 ml-2"
+          onClick={() => removeFromWishlistHandler(data)}
         />
         <img
           src={`${backend_url}${data?.images[0]}`}
@@ -95,8 +180,11 @@ const CartSingle = ({ data,removeFromWishlistHandler,addToCartHandler }) => {
           </h4>
         </div>
         <div>
-          <BsCartPlus size={20} className="cursor-pointer" tile="Add to cart"
-           onClick={() => addToCartHandler(data)}
+          <BsCartPlus
+            size={20}
+            className="cursor-pointer"
+            tile="Add to cart"
+            onClick={() => addToCartHandler(data)}
           />
         </div>
       </div>

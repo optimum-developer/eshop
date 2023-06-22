@@ -16,6 +16,7 @@ import {
 } from "../../redux/actions/wishlist";
 
 import { getAllOrdersOfAllUsers } from "../../redux/actions/order";
+import { setCartOnLoad } from "../../redux/reducers/addtocart";
 import { addTocart } from "../../redux/actions/cart";
 import { toast } from "react-toastify";
 import Ratings from "./Ratings";
@@ -26,12 +27,15 @@ const ProductDetails = ({ data }) => {
   const { cart } = useSelector((state) => state.cart);
   const { user, isAuthenticated } = useSelector((state) => state.user);
   const { products } = useSelector((state) => state.products);
+  const { items } = useSelector((state) => state.addcart);
   const [count, setCount] = useState(1);
   const [click, setClick] = useState(false);
   const [select, setSelect] = useState(0);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const userId = user._id;
 
+  const cartProductList = items.map((el) => el.product);
   useEffect(() => {
     dispatch(getAllProductsShop(data && data?.shop._id));
     dispatch(getAllOrdersOfAllUsers());
@@ -62,19 +66,33 @@ const ProductDetails = ({ data }) => {
     dispatch(addToWishlist(data));
   };
 
-  const addToCartHandler = (id) => {
-    const isItemExists = cart && cart.find((i) => i._id === id);
+  const addToCartHandler = async (id) => {
+    const isItemExists =
+      cartProductList && cartProductList.find((i) => i._id === id);
     if (isItemExists) {
       toast.error("Item already in cart!");
     } else {
       if (data.stock < 1) {
         toast.error("Product stock limited!");
       } else {
-        const cartData = { ...data, qty: count };
-        dispatch(addTocart(cartData));
-        toast.success("Item added to cart successfully!");
+        try {
+          const cart = await axios.post(`${server}/cart/add-to-cart`, {
+            userId: user._id,
+            product: { ...data, qty: 1 },
+          });
+
+          const cartData = await axios.post(`${server}/cart/get-cart-item`, {
+            userId: userId,
+          });
+          dispatch(setCartOnLoad(cartData.data.cartByUserId));
+          toast.success("Item added to cart successfully new!");
+        } catch (error) {
+          toast.error(error.response.data.message);
+        }
       }
     }
+
+    // return;
   };
 
   const totalReviewsLength =

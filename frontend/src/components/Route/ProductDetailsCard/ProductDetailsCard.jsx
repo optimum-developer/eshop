@@ -16,10 +16,20 @@ import {
   addToWishlist,
   removeFromWishlist,
 } from "../../../redux/actions/wishlist";
+import axios from "axios";
+import { server } from "../../../server";
+import { setCartOnLoad } from "../../../redux/reducers/addtocart";
+import { setWishlistOnload } from "../../../redux/reducers/addtowishlist";
 
 const ProductDetailsCard = ({ setOpen, data }) => {
+  console.log("ProductDetailsCard");
   const { cart } = useSelector((state) => state.cart);
   const { wishlist } = useSelector((state) => state.wishlist);
+  const { user } = useSelector((state) => state.user);
+  const { items } = useSelector((state) => state.addcart);
+  const cartProductList = items.map((el) => el.product);
+
+  const userId = user._id;
   const dispatch = useDispatch();
   const [count, setCount] = useState(1);
   const [click, setClick] = useState(false);
@@ -37,18 +47,80 @@ const ProductDetailsCard = ({ setOpen, data }) => {
     setCount(count + 1);
   };
 
-  const addToCartHandler = (id) => {
-    const isItemExists = cart && cart.find((i) => i._id === id);
+  const addToCartHandler = async (id) => {
+    const isItemExists =
+      cartProductList && cartProductList.find((i) => i._id === id);
     if (isItemExists) {
       toast.error("Item already in cart!");
     } else {
-      if (data.stock < count) {
+      if (data.stock < 1) {
         toast.error("Product stock limited!");
       } else {
-        const cartData = { ...data, qty: count };
-        dispatch(addTocart(cartData));
-        toast.success("Item added to cart successfully!");
+        try {
+          const cart = await axios.post(`${server}/cart/add-to-cart`, {
+            userId: user._id,
+            product: { ...data, qty: 1 },
+          });
+
+          const cartData = await axios.post(`${server}/cart/get-cart-item`, {
+            userId: userId,
+          });
+          dispatch(setCartOnLoad(cartData.data.cartByUserId));
+          toast.success("Item added to cart successfully!");
+        } catch (error) {
+          toast.error(error.response.data.message);
+        }
       }
+    }
+
+    // return;
+  };
+
+  const removeFromWishlistHandler = async (data) => {
+    setClick(!click);
+    try {
+      const wishlistData = await axios.delete(
+        `${server}/wishlist/delete-wishlist-item`,
+        {
+          data: {
+            productId: data._id,
+          },
+        }
+      );
+      toast.success("item deleted from wishlist");
+    } catch (error) {
+      console.log(error);
+    }
+
+    // update redux initial state
+    const wishlistData = await axios.post(
+      `${server}/wishlist/get-wishlist-item`,
+      {
+        userId: userId,
+      }
+    );
+    dispatch(setWishlistOnload(wishlistData.data.wishlistByUserId));
+    // dispatch(removeFromWishlist(data));
+  };
+
+  const addToWishlistHandler = async (data) => {
+    setClick(!click);
+    try {
+      const wishlist = await axios.post(`${server}/wishlist/add-to-wishlist`, {
+        userId: user._id,
+        product: data,
+      });
+
+      const wishlistData = await axios.post(
+        `${server}/wishlist/get-wishlist-item`,
+        {
+          userId: userId,
+        }
+      );
+      dispatch(setWishlistOnload(wishlistData.data.wishlistByUserId));
+      toast.success("Item added to wishlist successfully!");
+    } catch (error) {
+      toast.error(error.response.data.message);
     }
   };
 
@@ -59,16 +131,6 @@ const ProductDetailsCard = ({ setOpen, data }) => {
       setClick(false);
     }
   }, [wishlist]);
-
-  const removeFromWishlistHandler = (data) => {
-    setClick(!click);
-    dispatch(removeFromWishlist(data));
-  };
-
-  const addToWishlistHandler = (data) => {
-    setClick(!click);
-    dispatch(addToWishlist(data));
-  };
 
   return (
     <div className="bg-[#fff]">

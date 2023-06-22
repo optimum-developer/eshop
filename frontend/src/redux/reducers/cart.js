@@ -1,4 +1,7 @@
 import { createReducer } from "@reduxjs/toolkit";
+import axios from "axios";
+import { server } from "../../server";
+import { useDispatch, useSelector } from "react-redux";
 
 const initialState = {
   cart: localStorage.getItem("cartItems")
@@ -7,23 +10,33 @@ const initialState = {
 };
 
 export const cartReducer = createReducer(initialState, {
-  addToCart: (state, action) => {
+  addToCart: async (state, action) => {
     const item = action.payload;
-    const isItemExist = state.cart.find((i) => i._id === item._id);
-    if (isItemExist) {
-      return {
-        ...state,
-        cart: state.cart.map((i) => (i._id === isItemExist._id ? item : i)),
-      };
-    } else {
+    try {
+      const cartItem = await axios.post(`${server}/cart/add-to-cart`, {
+        userId: item.userId,
+        product: item,
+      });
+      console.log("cartItem.success:", cartItem.data.success);
       return {
         ...state,
         cart: [...state.cart, item],
       };
+    } catch (error) {
+      console.log("cartItem ", error.response.data.message);
+
+      // return {
+      //   ...state,
+      //   cart: state,
+      // };
     }
   },
 
-  removeFromCart: (state, action) => {
+  removeFromCart: async (state, action) => {
+    const data = action.payload;
+    console.log("data ", data);
+    // const cartData = await axios.delete(`${server}/cart/delete-cart-item`, {});
+
     return {
       ...state,
       cart: state.cart.filter((i) => i._id !== action.payload),

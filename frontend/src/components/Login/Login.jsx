@@ -5,12 +5,15 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { server } from "../../server";
 import { toast } from "react-toastify";
+import { useDispatch } from "react-redux";
 
 const Login = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [visible, setVisible] = useState(false);
+  const dispatch = useDispatch();
+  // const cart = useGetCart();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -25,9 +28,13 @@ const Login = () => {
         { withCredentials: true }
       )
       .then((res) => {
+        // console.log("cart login", cart);
+        // // return
+        // dispatch(setCartOnLoad(cart));
+
         toast.success("Login Success!");
         navigate("/");
-        window.location.reload(true); 
+        window.location.reload(true);
       })
       .catch((err) => {
         toast.error(err.response.data.message);

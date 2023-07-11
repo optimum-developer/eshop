@@ -8,6 +8,7 @@ import { getAllOrdersOfShop } from "../../redux/actions/order";
 import { getAllProductsShop } from "../../redux/actions/product";
 import { Button } from "@material-ui/core";
 import { DataGrid } from "@material-ui/data-grid";
+import { getAllSellers } from "../../redux/actions/sellers";
 
 const DashboardHero = () => {
   const dispatch = useDispatch();
@@ -15,12 +16,15 @@ const DashboardHero = () => {
   const { seller } = useSelector((state) => state.seller);
   const { products } = useSelector((state) => state.products);
 
+  console.log("Dashboard Hero ");
   useEffect(() => {
     dispatch(getAllOrdersOfShop(seller._id));
     dispatch(getAllProductsShop(seller._id));
   }, [dispatch]);
 
-  const availableBalance = seller?.availableBalance.toFixed(2);
+  const [availableBalance, SetavailableBalance] = useState(
+    seller?.availableBalance.toFixed(2)
+  );
 
   const columns = [
     { field: "id", headerName: "Order ID", minWidth: 150, flex: 0.7 },

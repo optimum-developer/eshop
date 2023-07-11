@@ -7,7 +7,7 @@ import {
   AiOutlineShoppingCart,
   AiOutlineStar,
 } from "react-icons/ai";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { backend_url, server } from "../../../server";
 import styles from "../../../styles/styles";
 import { useDispatch, useSelector } from "react-redux";
@@ -30,9 +30,8 @@ import { setCartOnLoad } from "../../../redux/reducers/addtocart";
 import { setWishlistOnload } from "../../../redux/reducers/addtowishlist";
 
 const ProductCard = ({ data, isEvent }) => {
-  console.log("ProductCard data", data.name);
   // const { wishlist } = useSelector((state) => state.wishlist);
-  const { user } = useSelector((state) => state.user);
+  const { isAuthenticated, user } = useSelector((state) => state.user);
   const { productList } = useSelector((state) => state.order);
   const { cart } = useSelector((state) => state.cart);
 
@@ -42,11 +41,13 @@ const ProductCard = ({ data, isEvent }) => {
   const [watch, setWatch] = useState();
   const { items } = useSelector((state) => state.addcart);
   const { wishlist } = useSelector((state) => state.addwishlist);
-  console.log("product card items", items);
   const cartProductList = items.map((el) => el.product);
   const wishlistProductName = wishlist.map((el) => el.product);
 
   const [click, setClick] = useState(false);
+  const navigate = useNavigate();
+
+  // console.log({ isAuthenticated });
 
   const removeFromWishlistHandler = async (data) => {
     setClick(!click);
@@ -77,6 +78,10 @@ const ProductCard = ({ data, isEvent }) => {
   };
 
   const addToWishlistHandler = async (data) => {
+    if (!isAuthenticated) {
+      console.log("not authenticated");
+      navigate("/login");
+    }
     setClick(!click);
     try {
       const wishlist = await axios.post(`${server}/wishlist/add-to-wishlist`, {
@@ -101,6 +106,10 @@ const ProductCard = ({ data, isEvent }) => {
   const wishlistData = useGetWishlist();
 
   const addToCartHandler = async (id) => {
+    if (!isAuthenticated) {
+      console.log("not authenticated");
+      navigate("/login");
+    }
     const isItemExists =
       cartProductList && cartProductList.find((i) => i._id === id);
     if (isItemExists) {

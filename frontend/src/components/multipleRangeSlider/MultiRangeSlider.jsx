@@ -28,6 +28,8 @@ const MultiRangeSlider = ({ min, max, onChange }) => {
 
   // Set width of the range to decrease from the right side
   useEffect(() => {
+    console.log("slider useEffect maxval");
+
     const minPercent = getPercent(minValRef.current);
     const maxPercent = getPercent(maxVal);
 
@@ -35,10 +37,17 @@ const MultiRangeSlider = ({ min, max, onChange }) => {
       range.current.style.width = `${maxPercent - minPercent}%`;
     }
   }, [maxVal, getPercent]);
-
+  let timer;
   // Get min and max values when their state changes
   useEffect(() => {
-    onChange({ min: minVal, max: maxVal });
+    if (timer) {
+      clearTimeout(timer);
+    }
+    timer = setTimeout(() => {
+      console.log("slider timer minval");
+
+      onChange({ min: minVal, max: maxVal });
+    }, 500);
   }, [minVal, maxVal, onChange]);
 
   return (
@@ -82,7 +91,7 @@ const MultiRangeSlider = ({ min, max, onChange }) => {
 MultiRangeSlider.propTypes = {
   min: PropTypes.number.isRequired,
   max: PropTypes.number.isRequired,
-  onChange: PropTypes.func.isRequired
+  onChange: PropTypes.func.isRequired,
 };
 
 export default MultiRangeSlider;

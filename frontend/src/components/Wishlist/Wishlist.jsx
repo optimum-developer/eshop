@@ -25,12 +25,9 @@ const Wishlist = ({ setOpenWishlist }) => {
   const cartProductList = items.map((el) => el.product);
   const wishlistProduct = wishlist.map((el) => el.product);
 
-  console.log("wishlistProduct ", wishlistProduct);
-
   const dispatch = useDispatch();
   const wishlistData = useGetWishlist();
   const userId = user._id;
-  console.log("wishlistItems ", userId, wishlist);
 
   const removeFromWishlistHandler = async (data) => {
     try {
@@ -57,16 +54,15 @@ const Wishlist = ({ setOpenWishlist }) => {
     dispatch(setWishlistOnload(wishlistData.data.wishlistByUserId));
     // dispatch(removeFromWishlist(data));
   };
-
   const addToCartHandler = async (data) => {
     const id = data._id;
     const isItemExists =
       cartProductList && cartProductList.find((i) => i._id === id);
     if (isItemExists) {
-      toast.error("Item already in cart!");
+      toast.error("Item already in cart! wishlist add to cart");
     } else {
       if (data.stock < 1) {
-        toast.error("Product stock limited!");
+        toast.error("Product stock limited! wishlist add to cart");
       } else {
         try {
           const cart = await axios.post(`${server}/cart/add-to-cart`, {
@@ -93,6 +89,8 @@ const Wishlist = ({ setOpenWishlist }) => {
         }
       }
     }
+    console.log("wishlist page");
+    return <h1>wishlist</h1>;
 
     // return;
 
@@ -144,7 +142,7 @@ const Wishlist = ({ setOpenWishlist }) => {
                       key={index}
                       data={i}
                       removeFromWishlistHandler={removeFromWishlistHandler}
-                      addToCartHandler={addToCartHandler(i)}
+                      addToCartHandler={addToCartHandler}
                     />
                   ))}
               </div>
@@ -164,7 +162,8 @@ const CartSingle = ({ data, removeFromWishlistHandler, addToCartHandler }) => {
     <div className="border-b p-4">
       <div className="w-full 800px:flex items-center">
         <RxCross1
-          className="cursor-pointer 800px:mb-['unset'] 800px:ml-['unset'] mb-2 ml-2"
+          size={25}
+          className="font-bold cursor-pointer 800px:mb-['unset'] 800px:ml-['unset'] mb-2 ml-2"
           onClick={() => removeFromWishlistHandler(data)}
         />
         <img

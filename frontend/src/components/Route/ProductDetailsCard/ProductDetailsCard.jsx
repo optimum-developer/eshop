@@ -6,7 +6,7 @@ import {
   AiOutlineShoppingCart,
 } from "react-icons/ai";
 import { RxCross1 } from "react-icons/rx";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { backend_url } from "../../../server";
 import styles from "../../../styles/styles";
 import { useDispatch, useSelector } from "react-redux";
@@ -22,18 +22,17 @@ import { setCartOnLoad } from "../../../redux/reducers/addtocart";
 import { setWishlistOnload } from "../../../redux/reducers/addtowishlist";
 
 const ProductDetailsCard = ({ setOpen, data }) => {
-  console.log("ProductDetailsCard");
   const { cart } = useSelector((state) => state.cart);
   const { wishlist } = useSelector((state) => state.wishlist);
-  const { user } = useSelector((state) => state.user);
+  const { isAuthenticated, user } = useSelector((state) => state.user);
   const { items } = useSelector((state) => state.addcart);
   const cartProductList = items.map((el) => el.product);
 
-  const userId = user._id;
+  const userId = user?._id;
   const dispatch = useDispatch();
   const [count, setCount] = useState(1);
   const [click, setClick] = useState(false);
-  //   const [select, setSelect] = useState(false);
+  const navigate = useNavigate();
 
   const handleMessageSubmit = () => {};
 
@@ -48,6 +47,8 @@ const ProductDetailsCard = ({ setOpen, data }) => {
   };
 
   const addToCartHandler = async (id) => {
+    if (!isAuthenticated) navigate("/login");
+
     const isItemExists =
       cartProductList && cartProductList.find((i) => i._id === id);
     if (isItemExists) {
@@ -104,6 +105,7 @@ const ProductDetailsCard = ({ setOpen, data }) => {
   };
 
   const addToWishlistHandler = async (data) => {
+    if (!isAuthenticated) navigate("/login");
     setClick(!click);
     try {
       const wishlist = await axios.post(`${server}/wishlist/add-to-wishlist`, {

@@ -33,9 +33,10 @@ const ProductDetails = ({ data }) => {
   const [select, setSelect] = useState(0);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const userId = user._id;
+  const userId = user?._id;
 
   const cartProductList = items.map((el) => el.product);
+
   useEffect(() => {
     dispatch(getAllProductsShop(data && data?.shop._id));
     dispatch(getAllOrdersOfAllUsers());

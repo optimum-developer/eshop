@@ -15,7 +15,7 @@ const useGetCart = () => {
       });
       return userData.data.user._id;
     } catch (error) {
-      console.log("homepage", error);
+      // console.log("homepage", error);
     }
   };
 
@@ -29,7 +29,7 @@ const useGetCart = () => {
         setCart(cart.data.cartByUserId);
         dispatch(setCartOnLoad(cart.data.cartByUserId));
       } catch (error) {
-        console.log("Error :", error);
+        // console.log("Error :", error);
       }
     };
     fetch();

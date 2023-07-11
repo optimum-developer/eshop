@@ -11,18 +11,23 @@ import {
   getProductListFromOrderList,
 } from "../redux/actions/order";
 
+// import MultiRangeSlider from "../components/multipleRangeSlider/MultiRangeSlider";
+
 const ProductsPage = () => {
   const [searchParams] = useSearchParams();
   const categoryData = searchParams.get("category");
-  const { allProducts, isLoading } = useSelector((state) => state.products);
+  const { allProducts , isLoading } = useSelector((state) => state.products);
   const { allOrders, productList } = useSelector((state) => state.order);
+  const dispatch = useDispatch();
+  const [selectedByBrand, setSelectedByBrand] = useState([]);
   const [data, setData] = useState([]);
   const [selectedValues, setSelectedValues] = useState([]);
   const [selectedByColor, setSelectedByColor] = useState([]);
   const [selectedBySize, setSelectedBySize] = useState([]);
-  const [selectedByBrand, setSelectedByBrand] = useState([]);
-  const dispatch = useDispatch();
+  const price = allProducts?.map((product) => product?.discountPrice);
+  const priceRangeArr = price?.sort((a, b) => a - b);
 
+  console.log("ProductsPage");
   const filterByCategory = allProducts
     ?.map((product) => product.category)
     .filter((e, index, arr) => arr.indexOf(e) == index)
@@ -56,7 +61,6 @@ const ProductsPage = () => {
 
       return updatedSelectedValues;
     });
-    // filterDataFunction();
   };
 
   const selectProductByColor = (option) => {
@@ -71,12 +75,6 @@ const ProductsPage = () => {
         ...selectedBySize,
         categoryData ? categoryData : "",
       ];
-      console.log("filterAttribute function", filterAttribute);
-      console.log("allProducts function", allProducts);
-      console.log(
-        "(categoryData ? filterAttribute.includes(categoryData) : true)",
-        categoryData ? filterAttribute.includes(categoryData) : "part 2"
-      );
 
       const renderByFilter = allProducts.filter((product, index) => {
         return (
@@ -92,7 +90,6 @@ const ProductsPage = () => {
           (categoryData ? filterAttribute.includes(product.category) : true)
         );
       });
-      console.log("renderByFilter color", renderByFilter);
 
       filterAttribute.length === 0
         ? setData(allProducts)
@@ -114,13 +111,7 @@ const ProductsPage = () => {
         ...selectedByBrand,
         categoryData ? categoryData : "",
       ];
-      console.log(
-        "(categoryData ? filterAttribute.includes(categoryData) : true)",
-        categoryData ? filterAttribute.includes(categoryData) : true
-      );
-      console.log("filterAttribute function", filterAttribute);
-      console.log("allProducts function", allProducts);
-      console.log("selectedByColor.length !== 0", selectedByColor.length !== 0);
+
       const renderByFilter = allProducts.filter((product, index) => {
         return (
           (selectedByColor.length !== 0
@@ -135,7 +126,6 @@ const ProductsPage = () => {
           (categoryData ? filterAttribute.includes(product.category) : true)
         );
       });
-      console.log("renderByFilter size", renderByFilter);
 
       filterAttribute.length === 0
         ? setData(allProducts)
@@ -158,8 +148,6 @@ const ProductsPage = () => {
         categoryData ? categoryData : "",
       ];
 
-      console.log("filterAttribute function", filterAttribute);
-      console.log("allProducts function", allProducts);
       const renderByFilter = allProducts.filter((product, index) => {
         return (
           (selectedByColor.length !== 0
@@ -171,7 +159,7 @@ const ProductsPage = () => {
           (selectedBySize.length !== 0
             ? filterAttribute.includes(product.size)
             : true) &&
-          (categoryData ? filterAttribute.includes(product.category) : false)
+          (categoryData ? filterAttribute.includes(product.category) : true)
         );
       });
       console.log("renderByFilter brand", renderByFilter);
@@ -184,7 +172,38 @@ const ProductsPage = () => {
     });
   };
 
+  const selectProductByRange = (min, max) => {
+    const filterAttribute = [
+      ...selectedByColor,
+      ...selectedBySize,
+      ...selectedByBrand,
+      categoryData ? categoryData : "",
+    ];
+
+    const renderByFilter = allProducts.filter((product, index) => {
+      return (
+        (selectedByColor.length !== 0
+          ? filterAttribute.includes(product.color)
+          : true) &&
+        (selectedByBrand.length !== 0
+          ? filterAttribute.includes(product.brand)
+          : true) &&
+        (selectedBySize.length !== 0
+          ? filterAttribute.includes(product.size)
+          : true) &&
+        min < product.discountPrice &&
+        max > product.discountPrice &&
+        (categoryData ? filterAttribute.includes(product.category) : true)
+      );
+    });
+    filterAttribute.length === 0
+      ? setData(allProducts)
+      : setData(renderByFilter);
+  };
+
   useEffect(() => {
+    console.log("useEffect 1 :");
+
     if (categoryData === null) {
       const d = allProducts;
       setData(d);
@@ -193,7 +212,7 @@ const ProductsPage = () => {
         allProducts && allProducts.filter((i) => i.category === categoryData);
       setData(d);
     }
-    //    window.scrollTo(0,0);
+    //  window.scrollTo(0,0);
   }, [allProducts]);
 
   useEffect(() => {
@@ -254,6 +273,14 @@ const ProductsPage = () => {
                   </ul>
                 ))}
               <br />
+              {/* <MultiRangeSlider
+                min={priceRangeArr[0]}
+                max={priceRangeArr[priceRangeArr.length - 1]}
+                onChange={({ min, max }) => {
+                  // console.log(`min = ${min}, max = ${max}`);
+                  selectProductByRange(min, max);
+                }}
+              /> */}
               {filterByColor.map((option, i) => (
                 <ul
                   key={i}

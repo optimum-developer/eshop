@@ -15,7 +15,7 @@ const useGetWishlist = (e) => {
       });
       return userData.data.user._id;
     } catch (error) {
-      console.log("homepage", error);
+      // console.log("homepage", error);
     }
   };
 
@@ -32,7 +32,7 @@ const useGetWishlist = (e) => {
         setWishlist(wishlist.data.wishlistByUserId);
         dispatch(setWishlistOnload(wishlist.data.wishlistByUserId));
       } catch (error) {
-        console.log(error);
+        // console.log(error);
       }
     };
     fetchWishlist();

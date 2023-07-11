@@ -11,10 +11,10 @@ import { useSelector, useDispatch } from "react-redux";
 import useGetCart from "../utils/useGetCart";
 import useGetWishlist from "../utils/useGetWishlist";
 
+
 const HomePage = () => {
   const wishlist = useGetWishlist();
   const cart = useGetCart();
-
   return (
     <div>
       <Header activeHeading={1} />

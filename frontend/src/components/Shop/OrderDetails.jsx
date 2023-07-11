@@ -7,6 +7,7 @@ import { getAllOrdersOfShop } from "../../redux/actions/order";
 import { backend_url, server } from "../../server";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { getAllSellers } from "../../redux/actions/sellers";
 
 const OrderDetails = () => {
   const { orders, isLoading } = useSelector((state) => state.order);
@@ -36,6 +37,7 @@ const OrderDetails = () => {
       )
       .then((res) => {
         toast.success("Order updated!");
+        dispatch(getAllSellers());
         navigate("/dashboard-orders");
       })
       .catch((error) => {

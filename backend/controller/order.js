@@ -115,7 +115,7 @@ router.put(
   catchAsyncErrors(async (req, res, next) => {
     try {
       const order = await Order.findById(req.params.id);
-
+      console.log("/update-order-status order", order);
       if (!order) {
         return next(new ErrorHandler("Order not found with this id", 400));
       }
@@ -131,6 +131,12 @@ router.put(
         order.deliveredAt = Date.now();
         order.paymentInfo.status = "Succeeded";
         const serviceCharge = order.totalPrice * 0.1;
+        console.log("/update-order-status serviceCharge", serviceCharge);
+        console.log(
+          "/update-order-status order.totalPrice - serviceCharge",
+          order.totalPrice - serviceCharge
+        );
+
         await updateSellerInfo(order.totalPrice - serviceCharge);
       }
 
@@ -152,10 +158,20 @@ router.put(
 
       async function updateSellerInfo(amount) {
         const seller = await Shop.findById(req.seller.id);
+        console.log("seller.availableBalance = ", seller.availableBalance);
+        console.log("amount = ", amount);
+        console.log(
+          "seller.availableBalance before save",
+          seller.availableBalance
+        );
 
-        seller.availableBalance = amount;
+        seller.availableBalance = seller.availableBalance + amount;
 
         await seller.save();
+        console.log(
+          "seller.availableBalance after save",
+          seller.availableBalance
+        );
       }
     } catch (error) {
       return next(new ErrorHandler(error.message, 500));

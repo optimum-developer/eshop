@@ -36,11 +36,21 @@ const Footer = () => {
       </div>
       <div className="grid grid-cols-1 sm:gird-cols-3 lg:grid-cols-4 gap-6 sm:px-8 px-5 py-16 sm:text-center">
         <ul className="px-5 text-center sm:text-start flex sm:block flex-col items-center">
-          <img
-            src="https://shopo.quomodothemes.website/assets/images/logo.svg"
-            alt=""
-            style={{ filter: "brightness(0) invert(1)" }}
-          />
+        <div className="flex gap-2">
+              <div>
+                <img
+                  // src="https://shopo.quomodothemes.website/assets/images/logo.svg"
+                  src="/logo/shopping.png"
+                  style={{ height: "50px", width: "60px" }}
+                  alt=""
+                />
+              </div>
+              <div className="flex justify-center align-items-center align-align-content-center ">
+                <p className="text-xl self-center text-yellow-500 font-bold">
+                  EASYSHOP
+                </p>
+              </div>
+            </div>
           <br />
           <p>The home and elements needeed to create beatiful products.</p>
           <div className="flex items-center mt-[15px]">
@@ -110,7 +120,7 @@ const Footer = () => {
         className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10
          text-center pt-2 text-gray-400 text-sm pb-8"
       >
-        <span>© 2020 Becodemy. All rights reserved.</span>
+        <span>© 2023 EasyShop. All rights reserved.</span>
         <span>Terms · Privacy Policy</span>
         <div className="sm:block flex items-center justify-center w-full">
           <img

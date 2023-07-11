@@ -10,12 +10,13 @@ router.post(
   "/add-to-wishlist",
   catchAsyncErrors(async (req, res, next) => {
     const { _id } = req.body.product;
+    const { userId } = req.body;
     try {
-      const product = await Wishlist.findOne({ "product._id": _id });
+      const product = await Wishlist.findOne({ userId, "product._id": _id });
       if (product) {
         return next(new ErrorHandler("Item already in wishlist", 400));
       } else {
-        wishlistData = req.body;
+        const wishlistData = req.body;
         const product = await Wishlist.create(wishlistData);
 
         res.status(201).json({
@@ -83,12 +84,18 @@ router.delete(
   "/delete-wishlist-item",
   catchAsyncErrors(async (req, res, next) => {
     try {
-      const { productId } = req.body;
-      console.log("delete-wishlist-item controller productId",productId);
+      const { userId, productId } = req.body;
+      console.log("delete-wishlist-item controller productId", productId);
 
-      const isItemExit = await Wishlist.findOne({ "product._id": productId });
+      const isItemExit = await Wishlist.findOne({
+        userId,
+        "product._id": productId,
+      });
 
-      const wishlist = await Wishlist.deleteOne({ "product._id": productId });
+      const wishlist = await Wishlist.deleteOne({
+        userId,
+        "product._id": productId,
+      });
 
       if (!isItemExit) {
         return next(new ErrorHandler("Item not in cart!", 500));

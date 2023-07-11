@@ -37,6 +37,14 @@ const Header = ({ activeHeading }) => {
 
   const handleSearchChange = (e) => {
     const term = e.target.value;
+    console.log({ searchData });
+    console.log({ term });
+    // console.log("length", term.length);
+
+    // if (term.length === 0) {
+    //   setSearchData(null);
+    //   return;
+    // }
     setSearchTerm(term);
 
     const filteredProducts =
@@ -45,6 +53,7 @@ const Header = ({ activeHeading }) => {
         product.name.toLowerCase().includes(term.toLowerCase())
       );
     setSearchData(filteredProducts);
+    console.log("length", filteredProducts.length);
   };
 
   window.addEventListener("scroll", () => {
@@ -59,40 +68,52 @@ const Header = ({ activeHeading }) => {
     <>
       <div className={`${styles.section}`}>
         <div className="800px:h-[50px] 800px:my-[20px] 800px:flex items-center justify-between">
-          <div>
-            <Link to="/">
-              <img
-                src="https://shopo.quomodothemes.website/assets/images/logo.svg"
-                alt=""
-              />
-            </Link>
-          </div>
+          <Link to="/" className="hidden md:block">
+            <div className="flex gap-2">
+              <div>
+                <img
+                  // src="https://shopo.quomodothemes.website/assets/images/logo.svg"
+                  src="/logo/shopping.png"
+                  style={{ height: "50px", width: "60px" }}
+                  alt=""
+                />
+              </div>
+              <div className="flex justify-center align-items-center align-align-content-center ">
+                <p className="text-xl self-center text-yellow-500 font-bold">
+                  EASYSHOP
+                </p>
+              </div>
+            </div>
+          </Link>
           {/* search box */}
-          <div className="w-[50%] relative">
-            <input
-              type="text"
-              placeholder="Search Product..."
-              value={searchTerm}
-              onChange={handleSearchChange}
-              className="h-[40px] w-full px-2 border-[#3957db] border-[2px] rounded-md"
-            />
-            <AiOutlineSearch
-              size={30}
-              className="absolute right-2 top-1.5 cursor-pointer"
-            />
+          <div className=" w-full py-2 md:py-0 md:w-[50%] relative">
+            <div className="h-[40px] w-full px-2 border-[#3957db] border-[2px] rounded-md flex justify-between bg-white">
+              <input
+                type="text"
+                placeholder="Search Product..."
+                value={searchTerm}
+                onChange={handleSearchChange}
+                className="w-full"
+              />
+              <AiOutlineSearch
+                size={30}
+                className="cursor-pointer self-center"
+              />
+            </div>
+
             {searchData && searchData.length !== 0 ? (
               <div className="absolute min-h-[30vh] bg-slate-50 shadow-sm-2 z-[9] p-4">
                 {searchData &&
                   searchData.map((i, index) => {
                     return (
-                      <Link to={`/product/${i._id}`}>
-                        <div className="w-full flex items-start-py-3">
+                      <Link to={`/product/${i._id}`} key={i._id}>
+                        <div className="w-full flex items-start py-2 ">
                           <img
                             src={`${backend_url}${i.images[0]}`}
                             alt=""
                             className="w-[40px] h-[40px] mr-[10px]"
                           />
-                          <h1>{i.name}</h1>
+                          <h1 className="self-center">{i.name}</h1>
                         </div>
                       </Link>
                     );
@@ -218,15 +239,23 @@ const Header = ({ activeHeading }) => {
               onClick={() => setOpen(true)}
             />
           </div>
-          <div>
-            <Link to="/">
-              <img
-                src="https://shopo.quomodothemes.website/assets/images/logo.svg"
-                alt=""
-                className="mt-3 cursor-pointer"
-              />
-            </Link>
-          </div>
+          <Link to="/">
+            <div className="flex gap-2">
+              <div>
+                <img
+                  // src="https://shopo.quomodothemes.website/assets/images/logo.svg"
+                  src="/logo/shopping.png"
+                  style={{ height: "50px", width: "60px" }}
+                  alt=""
+                />
+              </div>
+              <div className="flex justify-center align-items-center align-align-content-center ">
+                <p className=" text-xl self-center text-yellow-500 font-bold">
+                  EASYSHOP
+                </p>
+              </div>
+            </div>
+          </Link>
           <div>
             <div
               className="relative mr-[20px]"
@@ -270,7 +299,7 @@ const Header = ({ activeHeading }) => {
                 />
               </div>
 
-              <div className="my-8 w-[92%] m-auto h-[40px relative]">
+              <div className="border-[#d61616] my-8 w-[92%] m-auto h-[40px relative]">
                 <input
                   type="search"
                   placeholder="Search Product..."

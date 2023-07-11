@@ -10,8 +10,12 @@ router.post(
   "/add-to-cart",
   catchAsyncErrors(async (req, res, next) => {
     const { _id } = req.body.product;
+    const { userId } = req.body;
+    console.log({ _id });
+    console.log({ userId });
+
     try {
-      const product = await Cart.findOne({ "product._id": _id });
+      const product = await Cart.findOne({ userId, "product._id": _id });
       if (product) {
         return next(new ErrorHandler("Item already in cart", 400));
       } else {

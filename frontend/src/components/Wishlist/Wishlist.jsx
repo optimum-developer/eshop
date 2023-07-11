@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { RxCross1 } from "react-icons/rx";
 import { IoBagHandleOutline } from "react-icons/io5";
 import { BsCartPlus } from "react-icons/bs";
@@ -19,7 +20,7 @@ import { setCartOnLoad } from "../../redux/reducers/addtocart";
 const Wishlist = ({ setOpenWishlist }) => {
   // const { wishlist } = useSelector((state) => state.wishlist);
   const { wishlist } = useSelector((state) => state.addwishlist);
-  const { user } = useSelector((state) => state.user);
+  const { user, isAuthenticated } = useSelector((state) => state.user);
   const { items } = useSelector((state) => state.addcart);
 
   const cartProductList = items.map((el) => el.product);
@@ -28,6 +29,7 @@ const Wishlist = ({ setOpenWishlist }) => {
   const dispatch = useDispatch();
   const wishlistData = useGetWishlist();
   const userId = user._id;
+  const navigate = useNavigate();
 
   const removeFromWishlistHandler = async (data) => {
     try {
@@ -35,6 +37,7 @@ const Wishlist = ({ setOpenWishlist }) => {
         `${server}/wishlist/delete-wishlist-item`,
         {
           data: {
+            userId: userId,
             productId: data._id,
           },
         }
@@ -55,6 +58,7 @@ const Wishlist = ({ setOpenWishlist }) => {
     // dispatch(removeFromWishlist(data));
   };
   const addToCartHandler = async (data) => {
+    if (!isAuthenticated) navigate("/login");
     const id = data._id;
     const isItemExists =
       cartProductList && cartProductList.find((i) => i._id === id);

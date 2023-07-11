@@ -57,6 +57,7 @@ const ProductCard = ({ data, isEvent }) => {
         `${server}/wishlist/delete-wishlist-item`,
         {
           data: {
+            userId: userId,
             productId: data._id,
           },
         }
@@ -107,7 +108,6 @@ const ProductCard = ({ data, isEvent }) => {
 
   const addToCartHandler = async (id) => {
     if (!isAuthenticated) {
-      console.log("not authenticated");
       navigate("/login");
     }
     const isItemExists =

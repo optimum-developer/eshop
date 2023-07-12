@@ -16,6 +16,15 @@ const productSchema = new mongoose.Schema({
   tags: {
     type: String,
   },
+  color: {
+    type: String,
+  },
+  brand: {
+    type: String,
+  },
+  size: {
+    type: String,
+  },
   originalPrice: {
     type: Number,
   },
@@ -46,10 +55,10 @@ const productSchema = new mongoose.Schema({
       productId: {
         type: String,
       },
-      createdAt:{
+      createdAt: {
         type: Date,
         default: Date.now(),
-      }
+      },
     },
   ],
   ratings: {

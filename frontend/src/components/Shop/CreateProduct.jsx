@@ -3,7 +3,13 @@ import { AiOutlinePlusCircle } from "react-icons/ai";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { createProduct } from "../../redux/actions/product";
-import { categoriesData } from "../../static/data";
+import {
+  categoriesData,
+  colorList,
+  brandList,
+  sizeList,
+} from "../../static/data";
+
 import { toast } from "react-toastify";
 
 const CreateProduct = () => {
@@ -20,6 +26,9 @@ const CreateProduct = () => {
   const [originalPrice, setOriginalPrice] = useState();
   const [discountPrice, setDiscountPrice] = useState();
   const [stock, setStock] = useState();
+  const [color, setColor] = useState("");
+  const [brand, setBrand] = useState("");
+  const [size, setSize] = useState("");
 
   useEffect(() => {
     if (error) {
@@ -53,6 +62,9 @@ const CreateProduct = () => {
     newForm.append("description", description);
     newForm.append("category", category);
     newForm.append("tags", tags);
+    newForm.append("color", color);
+    newForm.append("size", size);
+    newForm.append("brand", brand);
     newForm.append("originalPrice", originalPrice);
     newForm.append("discountPrice", discountPrice);
     newForm.append("stock", stock);
@@ -126,6 +138,65 @@ const CreateProduct = () => {
             onChange={(e) => setTags(e.target.value)}
             placeholder="Enter your product tags..."
           />
+        </div>
+        <br />
+        <div>
+          <label className="pb-2">
+            Brand <span className="text-red-500">*</span>
+          </label>
+          <select
+            className="w-full mt-2 border h-[35px] rounded-[5px]"
+            value={brand}
+            onChange={(e) => setBrand(e.target.value)}
+          >
+            <option value="Select">Select</option>
+            {brandList &&
+              brandList.map((brandName, index) => (
+                <option value={brandName} key={index}>
+                  {brandName}
+                </option>
+              ))}
+          </select>
+        </div>
+        <br />
+        <br />
+        <div>
+          <label className="pb-2">
+            Color <span className="text-red-500">*</span>
+          </label>
+          <select
+            className="w-full mt-2 border h-[35px] rounded-[5px]"
+            value={color}
+            onChange={(e) => setColor(e.target.value)}
+          >
+            <option value="Select">Select</option>
+            {colorList &&
+              colorList.map((colorName, index) => (
+                <option value={colorName} key={index}>
+                  {colorName}
+                </option>
+              ))}
+          </select>
+        </div>
+        <br />
+        <br />
+        <div>
+          <label className="pb-2">
+            Size <span className="text-red-500">*</span>
+          </label>
+          <select
+            className="w-full mt-2 border h-[35px] rounded-[5px]"
+            value={size}
+            onChange={(e) => setSize(e.target.value)}
+          >
+            <option value="Select">Select</option>
+            {sizeList &&
+              sizeList.map((size, index) => (
+                <option value={size} key={index}>
+                  {size}
+                </option>
+              ))}
+          </select>
         </div>
         <br />
         <div>

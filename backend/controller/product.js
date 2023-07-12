@@ -22,13 +22,10 @@ router.post(
       } else {
         const files = req.files;
         const imageUrls = files.map((file) => `${file.filename}`);
-
         const productData = req.body;
         productData.images = imageUrls;
         productData.shop = shop;
-
         const product = await Product.create(productData);
-
         res.status(201).json({
           success: true,
           product,

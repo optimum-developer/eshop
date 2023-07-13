@@ -8,6 +8,8 @@ import { backend_url, server } from "../../server";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { getAllSellers } from "../../redux/actions/sellers";
+import { loadSeller} from "../../redux/actions/user";
+
 
 const OrderDetails = () => {
   const { orders, isLoading } = useSelector((state) => state.order);
@@ -38,6 +40,7 @@ const OrderDetails = () => {
       .then((res) => {
         toast.success("Order updated!");
         dispatch(getAllSellers());
+        dispatch(loadSeller());
         navigate("/dashboard-orders");
       })
       .catch((error) => {
@@ -57,6 +60,8 @@ const OrderDetails = () => {
       .then((res) => {
         toast.success("Order updated!");
         dispatch(getAllOrdersOfShop(seller._id));
+        dispatch(loadSeller());
+
       })
       .catch((error) => {
         toast.error(error.response.data.message);

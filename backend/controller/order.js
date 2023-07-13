@@ -115,7 +115,6 @@ router.put(
   catchAsyncErrors(async (req, res, next) => {
     try {
       const order = await Order.findById(req.params.id);
-      console.log("/update-order-status order", order);
       if (!order) {
         return next(new ErrorHandler("Order not found with this id", 400));
       }
@@ -158,20 +157,8 @@ router.put(
 
       async function updateSellerInfo(amount) {
         const seller = await Shop.findById(req.seller.id);
-        console.log("seller.availableBalance = ", seller.availableBalance);
-        console.log("amount = ", amount);
-        console.log(
-          "seller.availableBalance before save",
-          seller.availableBalance
-        );
-
         seller.availableBalance = seller.availableBalance + amount;
-
         await seller.save();
-        console.log(
-          "seller.availableBalance after save",
-          seller.availableBalance
-        );
       }
     } catch (error) {
       return next(new ErrorHandler(error.message, 500));
@@ -230,6 +217,13 @@ router.put(
         order.cart.forEach(async (o) => {
           await updateOrder(o._id, o.qty);
         });
+        console.log("order.totalPrice", order.totalPrice);
+        console.log(order.status);
+
+        const serviceCharge = order.totalPrice * 0.1;
+        console.log("serviceCharge", serviceCharge);
+
+        await updateSellerInfo(order.totalPrice + serviceCharge);
       }
 
       async function updateOrder(id, qty) {
@@ -239,6 +233,13 @@ router.put(
         product.sold_out -= qty;
 
         await product.save({ validateBeforeSave: false });
+      }
+      async function updateSellerInfo(amount) {
+        const seller = await Shop.findById(req.seller.id);
+        console.log("seller before balanc :", seller.availableBalance);
+        seller.availableBalance = seller.availableBalance - amount;
+        await seller.save();
+        console.log("seller after balanc :", seller.availableBalance);
       }
     } catch (error) {
       return next(new ErrorHandler(error.message, 500));

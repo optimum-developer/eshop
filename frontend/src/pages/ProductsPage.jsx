@@ -16,7 +16,7 @@ import {
 const ProductsPage = () => {
   const [searchParams] = useSearchParams();
   const categoryData = searchParams.get("category");
-  const { allProducts , isLoading } = useSelector((state) => state.products);
+  const { allProducts, isLoading } = useSelector((state) => state.products);
   const { allOrders, productList } = useSelector((state) => state.order);
   const dispatch = useDispatch();
   const [selectedByBrand, setSelectedByBrand] = useState([]);
@@ -48,43 +48,66 @@ const ProductsPage = () => {
     .filter((e, index, arr) => arr.indexOf(e) == index)
     .sort();
 
-  const selectProductByCategory = (option) => {
-    setSelectedValues((prevSelectedValues) => {
+  // const selectProductByCategory = (option) => {
+  //   setSelectedValues((prevSelectedValues) => {
+  //     const updatedSelectedValues = prevSelectedValues.includes(option)
+  //       ? prevSelectedValues.filter((val) => val !== option)
+  //       : [...prevSelectedValues, option];
+  //     const filteredData = allProducts.filter((product) =>
+  //       updatedSelectedValues.includes(product.category)
+  //     );
+
+  //     filteredData.length === 0 ? setData(allProducts) : setData(filteredData);
+
+  //     return updatedSelectedValues;
+  //   });
+  // };
+
+  const selectProductByType = (option, name, setType) => {
+    console.log({ option });
+    console.log({ name });
+    console.log({ setType });
+
+    setType((prevSelectedValues) => {
       const updatedSelectedValues = prevSelectedValues.includes(option)
         ? prevSelectedValues.filter((val) => val !== option)
         : [...prevSelectedValues, option];
-      const filteredData = allProducts.filter((product) =>
-        updatedSelectedValues.includes(product.category)
-      );
-
-      filteredData.length === 0 ? setData(allProducts) : setData(filteredData);
-
-      return updatedSelectedValues;
-    });
-  };
-
-  const selectProductByColor = (option) => {
-    setSelectedByColor((prevSelectedValues) => {
-      const updatedSelectedValues = prevSelectedValues.includes(option)
-        ? prevSelectedValues.filter((val) => val !== option)
-        : [...prevSelectedValues, option];
-
-      const filterAttribute = [
-        ...updatedSelectedValues,
-        ...selectedByBrand,
-        ...selectedBySize,
-        categoryData ? categoryData : "",
-      ];
+      let filterAttribute;
+      if (name === "Color") {
+        filterAttribute = [
+          ...updatedSelectedValues,
+          ...selectedByBrand,
+          ...selectedBySize,
+          categoryData ? categoryData : "",
+        ];
+      } else if (name === "Size") {
+        filterAttribute = [
+          ...selectedByColor,
+          ...updatedSelectedValues,
+          ...selectedByBrand,
+          categoryData ? categoryData : "",
+        ];
+      } else {
+        filterAttribute = [
+          ...selectedByColor,
+          ...selectedBySize,
+          ...updatedSelectedValues,
+          categoryData ? categoryData : "",
+        ];
+      }
 
       const renderByFilter = allProducts.filter((product, index) => {
         return (
-          (updatedSelectedValues.length !== 0
+          ((name === "Color" ? updatedSelectedValues : selectedByColor)
+            .length !== 0
             ? filterAttribute.includes(product.color)
             : true) &&
-          (selectedByBrand.length !== 0
+          ((name === "Brand" ? updatedSelectedValues : selectedByBrand)
+            .length !== 0
             ? filterAttribute.includes(product.brand)
             : true) &&
-          (selectedBySize.length !== 0
+          ((name === "Size" ? updatedSelectedValues : selectedBySize).length !==
+          0
             ? filterAttribute.includes(product.size)
             : true) &&
           (categoryData ? filterAttribute.includes(product.category) : true)
@@ -99,111 +122,28 @@ const ProductsPage = () => {
     });
   };
 
-  const selectProductBySize = (option) => {
-    setSelectedBySize((prevSelectedValues) => {
-      const updatedSelectedValues = prevSelectedValues.includes(option)
-        ? prevSelectedValues.filter((val) => val !== option)
-        : [...prevSelectedValues, option];
-
-      const filterAttribute = [
-        ...selectedByColor,
-        ...updatedSelectedValues,
-        ...selectedByBrand,
-        categoryData ? categoryData : "",
-      ];
-
-      const renderByFilter = allProducts.filter((product, index) => {
-        return (
-          (selectedByColor.length !== 0
-            ? filterAttribute.includes(product.color)
-            : true) &&
-          (selectedByBrand.length !== 0
-            ? filterAttribute.includes(product.brand)
-            : true) &&
-          (updatedSelectedValues.length !== 0
-            ? filterAttribute.includes(product.size)
-            : true) &&
-          (categoryData ? filterAttribute.includes(product.category) : true)
-        );
-      });
-
-      filterAttribute.length === 0
-        ? setData(allProducts)
-        : setData(renderByFilter);
-
-      return updatedSelectedValues;
-    });
-  };
-
-  const selectProductByBrand = (option) => {
-    setSelectedByBrand((prevSelectedValues) => {
-      const updatedSelectedValues = prevSelectedValues.includes(option)
-        ? prevSelectedValues.filter((val) => val !== option)
-        : [...prevSelectedValues, option];
-
-      const filterAttribute = [
-        ...selectedByColor,
-        ...selectedBySize,
-        ...updatedSelectedValues,
-        categoryData ? categoryData : "",
-      ];
-
-      const renderByFilter = allProducts.filter((product, index) => {
-        return (
-          (selectedByColor.length !== 0
-            ? filterAttribute.includes(product.color)
-            : true) &&
-          (updatedSelectedValues.length !== 0
-            ? filterAttribute.includes(product.brand)
-            : true) &&
-          (selectedBySize.length !== 0
-            ? filterAttribute.includes(product.size)
-            : true) &&
-          (categoryData ? filterAttribute.includes(product.category) : true)
-        );
-      });
-      console.log("renderByFilter brand", renderByFilter);
-
-      filterAttribute.length === 0
-        ? setData(allProducts)
-        : setData(renderByFilter);
-
-      return updatedSelectedValues;
-    });
-  };
-
-  const selectProductByRange = (min, max) => {
-    const filterAttribute = [
-      ...selectedByColor,
-      ...selectedBySize,
-      ...selectedByBrand,
-      categoryData ? categoryData : "",
-    ];
-
-    const renderByFilter = allProducts.filter((product, index) => {
-      return (
-        (selectedByColor.length !== 0
-          ? filterAttribute.includes(product.color)
-          : true) &&
-        (selectedByBrand.length !== 0
-          ? filterAttribute.includes(product.brand)
-          : true) &&
-        (selectedBySize.length !== 0
-          ? filterAttribute.includes(product.size)
-          : true) &&
-        min < product.discountPrice &&
-        max > product.discountPrice &&
-        (categoryData ? filterAttribute.includes(product.category) : true)
-      );
-    });
-    filterAttribute.length === 0
-      ? setData(allProducts)
-      : setData(renderByFilter);
-  };
+  const filterTag = [
+    {
+      name: "Color",
+      category: filterByColor,
+      selectedByCategory: selectedByColor,
+      setType: setSelectedByColor,
+    },
+    {
+      name: "Size",
+      category: filterBySize,
+      selectedByCategory: selectedBySize,
+      setType: setSelectedBySize,
+    },
+    {
+      name: "Brand",
+      category: filterByBrand,
+      selectedByCategory: selectedByBrand,
+      setType: setSelectedByBrand,
+    },
+  ];
 
   useEffect(() => {
-    console.log("useEffect 1 :");
-
     if (categoryData === null) {
       const d = allProducts;
       setData(d);
@@ -251,7 +191,7 @@ const ProductsPage = () => {
                 filterByCategory.map((option, i) => (
                   <ul
                     key={i}
-                    className="w-48 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                    className="w-48 text-sm font-medium text-gray-900 bg-white border border-red-200 rounded-lg  dark:border-gray-600 dark:text-white"
                   >
                     <li className="w-full border-b border-gray-200 rounded-t-lg dark:border-gray-600">
                       <div className="flex items-center pl-3">
@@ -260,7 +200,7 @@ const ProductsPage = () => {
                           type="checkbox"
                           checked={selectedValues.includes(option)}
                           className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500"
-                          onChange={() => selectProductByCategory(option)}
+                          // onChange={() => selectProductByCategory(option)}
                         />
                         <label
                           htmlFor="vue-checkbox"
@@ -272,7 +212,6 @@ const ProductsPage = () => {
                     </li>
                   </ul>
                 ))}
-              <br />
               {/* <MultiRangeSlider
                 min={priceRangeArr[0]}
                 max={priceRangeArr[priceRangeArr.length - 1]}
@@ -281,84 +220,38 @@ const ProductsPage = () => {
                   selectProductByRange(min, max);
                 }}
               /> */}
-              {filterByColor.map((option, i) => (
-                <ul
-                  key={i}
-                  className="w-48 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+              {filterTag.map((el) => (
+                <div
+                  className="w-48 flex flex-col   bg-white px-4 py-2 text-gray-400 hover:text-gray-500 rounded"
+                  key={el.name}
                 >
-                  <li className="w-full border-b border-gray-200 rounded-t-lg dark:border-gray-600">
-                    <div className="flex items-center pl-3">
-                      <input
-                        id="vue-checkbox"
-                        type="checkbox"
-                        checked={selectedByColor.includes(option)}
-                        className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500"
-                        onChange={() => selectProductByColor(option)}
-                      />
-                      <label
-                        htmlFor="vue-checkbox"
-                        className="w-full py-3 ml-2 text-sm font-medium text-gray-900 dark:text-gray-300"
-                      >
-                        {option}
-                      </label>
+                  <span className="font-medium text-gray-900 pb-4">
+                    {el.name}
+                  </span>
+                  {el.category.map((option, i) => (
+                    <div className="mb-2" key={i}>
+                      <div className="flex items-center">
+                        <input
+                          id="vue-checkbox"
+                          type="checkbox"
+                          checked={el.selectedByCategory.includes(option)}
+                          className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                          onChange={() =>
+                            selectProductByType(option, el.name, el.setType)
+                          }
+                        />
+
+                        <label
+                          htmlFor="vue-checkbox"
+                          className="ml-3 min-w-0 flex-1 text-gray-500"
+                        >
+                          {option}
+                        </label>
+                      </div>
                     </div>
-                  </li>
-                </ul>
-              ))}
-              <h3 className="mb-4 font-semibold text-gray-900 dark:text-white">
-                Size
-              </h3>
-              {filterBySize.map((option, i) => (
-                <ul
-                  key={i}
-                  className="w-48 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                >
-                  <li className="w-full border-b border-gray-200 rounded-t-lg dark:border-gray-600">
-                    <div className="flex items-center pl-3">
-                      <input
-                        id="vue-checkbox"
-                        type="checkbox"
-                        checked={selectedBySize.includes(option)}
-                        className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500"
-                        onChange={() => selectProductBySize(option)}
-                      />
-                      <label
-                        htmlFor="vue-checkbox"
-                        className="w-full py-3 ml-2 text-sm font-medium text-gray-900 dark:text-gray-300"
-                      >
-                        {option}
-                      </label>
-                    </div>
-                  </li>
-                </ul>
-              ))}
-              <br />
-              <h3 className="mb-4 font-semibold text--900 dark:text-white">
-                Brand
-              </h3>
-              {filterByBrand.map((option, i) => (
-                <ul
-                  key={i}
-                  className="w-48 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                >
-                  <li className="w-full border-b border-gray-200 rounded-t-lg dark:border-gray-600">
-                    <div className="flex items-center pl-3">
-                      <input
-                        id="vue-checkbox"
-                        type="checkbox"
-                        checked={selectedByBrand.includes(option)}
-                        className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500"
-                        onChange={() => selectProductByBrand(option)}
-                      />
-                      <label
-                        htmlFor="vue-checkbox"
-                        className="w-full py-3 ml-2 text-sm font-medium text-gray-900 dark:text-gray-300"
-                      >
-                        {option}
-                      </label>
-                    </div>
-                  </li>
-                </ul>
+                  ))}
+                  <hr className="border-gray-300 mt-4" />
+                </div>
               ))}
             </div>
             <div className="product-container justify-center justify-items-center content-center">

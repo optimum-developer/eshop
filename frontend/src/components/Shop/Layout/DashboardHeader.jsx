@@ -13,10 +13,21 @@ const DashboardHeader = () => {
     <div className="w-full h-[80px] bg-white shadow sticky top-0 left-0 z-30 flex items-center justify-between px-4">
       <div>
         <Link to="/dashboard">
-          <img
-            src="https://shopo.quomodothemes.website/assets/images/logo.svg"
-            alt=""
-          />
+          <div className="flex gap-2">
+            <div>
+              <img
+                // src="https://shopo.quomodothemes.website/assets/images/logo.svg"
+                src="/logo/shopping.png"
+                style={{ height: "50px", width: "60px" }}
+                alt=""
+              />
+            </div>
+            <div className="flex justify-center align-items-center align-align-content-center ">
+              <p className=" text-xl self-center text-yellow-500 font-bold">
+                EASYSHOP
+              </p>
+            </div>
+          </div>
         </Link>
       </div>
       <div className="flex items-center">

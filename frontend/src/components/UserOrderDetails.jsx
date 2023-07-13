@@ -9,6 +9,7 @@ import { RxCross1 } from "react-icons/rx";
 import { AiFillStar, AiOutlineStar } from "react-icons/ai";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { getAllProducts } from "../redux/actions/product";
 
 const UserOrderDetails = () => {
   const { orders } = useSelector((state) => state.order);
@@ -18,7 +19,6 @@ const UserOrderDetails = () => {
   const [comment, setComment] = useState("");
   const [selectedItem, setSelectedItem] = useState(null);
   const [rating, setRating] = useState(1);
-  console.log("orders :", orders);
   const { id } = useParams();
 
   useEffect(() => {
@@ -44,6 +44,7 @@ const UserOrderDetails = () => {
       .then((res) => {
         toast.success(res.data.message);
         dispatch(getAllOrdersOfUser(user._id));
+        dispatch(getAllProducts());
         setComment("");
         setRating(null);
         setOpen(false);

@@ -10,7 +10,7 @@ import Footer from "../components/Layout/Footer";
 import { useSelector, useDispatch } from "react-redux";
 import useGetCart from "../utils/useGetCart";
 import useGetWishlist from "../utils/useGetWishlist";
-
+import HeroCarousel from "../components/Route/Hero/HeroCarousel";
 
 const HomePage = () => {
   const wishlist = useGetWishlist();
@@ -18,7 +18,8 @@ const HomePage = () => {
   return (
     <div>
       <Header activeHeading={1} />
-      <Hero />
+      {/* <Hero /> */}
+      <HeroCarousel />
       <Categories />
       <BestDeals />
       <Events />

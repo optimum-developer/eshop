@@ -1,23 +1,34 @@
-import React from 'react'
-import { AiOutlineGift } from 'react-icons/ai'
-import { BiMessageSquareDetail } from 'react-icons/bi'
-import { FiPackage, FiShoppingBag } from 'react-icons/fi'
-import { MdOutlineLocalOffer } from 'react-icons/md'
-import { useSelector } from 'react-redux'
-import { Link } from 'react-router-dom'
-import { backend_url } from '../../server'
+import React from "react";
+import { AiOutlineGift } from "react-icons/ai";
+import { BiMessageSquareDetail } from "react-icons/bi";
+import { FiPackage, FiShoppingBag } from "react-icons/fi";
+import { MdOutlineLocalOffer } from "react-icons/md";
+import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
+import { backend_url } from "../../server";
 
 const AdminHeader = () => {
-    const {user} = useSelector((state) => state.user);
+  const { user } = useSelector((state) => state.user);
 
   return (
-         <div className="w-full h-[80px] bg-white shadow sticky top-0 left-0 z-30 flex items-center justify-between px-4">
+    <div className="w-full h-[80px] bg-white shadow sticky top-0 left-0 z-30 flex items-center justify-between px-4">
       <div>
         <Link to="/">
-          <img
-            src="https://shopo.quomodothemes.website/assets/images/logo.svg"
-            alt=""
-          />
+          <div className="flex gap-2">
+            <div>
+              <img
+                // src="https://shopo.quomodothemes.website/assets/images/logo.svg"
+                src="/logo/shopping.png"
+                style={{ height: "50px", width: "60px" }}
+                alt=""
+              />
+            </div>
+            <div className="flex justify-center align-items-center align-align-content-center ">
+              <p className=" text-xl self-center text-yellow-500 font-bold">
+                EASYSHOP
+              </p>
+            </div>
+          </div>
         </Link>
       </div>
       <div className="flex items-center">
@@ -53,15 +64,15 @@ const AdminHeader = () => {
               className="mx-5 cursor-pointer"
             />
           </Link>
-            <img
-              src={`${backend_url}${user?.avatar}`}
-              alt=""
-              className="w-[50px] h-[50px] rounded-full object-cover"
-            />
+          <img
+            src={`${backend_url}${user?.avatar}`}
+            alt=""
+            className="w-[50px] h-[50px] rounded-full object-cover"
+          />
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default AdminHeader
+export default AdminHeader;

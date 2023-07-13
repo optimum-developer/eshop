@@ -114,13 +114,9 @@ router.put(
   isAuthenticated,
   catchAsyncErrors(async (req, res, next) => {
     try {
-      console.log("inside review black tshirt test");
       const { user, rating, comment, productId, orderId } = req.body;
-      console.log("productId", productId);
 
       const product = await Product.findById(productId);
-      // console.log("req.body :", req.body);
-      console.log("product", product);
 
       const review = {
         user,

@@ -15,7 +15,6 @@ const ProductDetailsPage = () => {
   const eventData = searchParams.get("isEvent");
 
   useEffect(() => {
-    console.log("ProductDetailsPageUseEffect",allProducts);
     if (eventData !== null) {
       const data = allEvents && allEvents.find((i) => i._id === id);
       setData(data);
@@ -26,7 +25,7 @@ const ProductDetailsPage = () => {
   }, [allProducts, allEvents, id]);
 
   // useEffect(() => {
-  //   console.log("useEffect");
+  //   ("useEffect");
   // }, []);
 
   if (data === null) return;

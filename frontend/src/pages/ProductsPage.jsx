@@ -27,7 +27,6 @@ const ProductsPage = () => {
   const price = allProducts?.map((product) => product?.discountPrice);
   const priceRangeArr = price?.sort((a, b) => a - b);
 
-  console.log("ProductsPage");
   const filterByCategory = allProducts
     ?.map((product) => product.category)
     .filter((e, index, arr) => arr.indexOf(e) == index)
@@ -64,10 +63,6 @@ const ProductsPage = () => {
   // };
 
   const selectProductByType = (option, name, setType) => {
-    console.log({ option });
-    console.log({ name });
-    console.log({ setType });
-
     setType((prevSelectedValues) => {
       const updatedSelectedValues = prevSelectedValues.includes(option)
         ? prevSelectedValues.filter((val) => val !== option)
@@ -180,7 +175,7 @@ const ProductsPage = () => {
           )}
 
           <br />
-          <div className="main-product-container flex flex-row content-evenly">
+          <div className="main-product-container flex flex-row justify-between px-4 gap-8">
             <div className="filter-container justify-center justify-items-center content-center">
               {false && (
                 <h3 className="mb-4 font-semibold text-gray-900 dark:text-dark">
@@ -254,20 +249,16 @@ const ProductsPage = () => {
                 </div>
               ))}
             </div>
-            <div className="product-container justify-center justify-items-center content-center">
-              <div className={`${styles.section}`}>
-                <div className="grid grid-cols-1 gap-[20px] md:grid-cols-2 md:gap-[25px] lg:grid-cols-3 lg:gap-[25px] xl:grid-cols-4 xl:gap-[30px] mb-12">
-                  {data &&
-                    data.map((i, index) => (
-                      <ProductCard data={i} key={index} />
-                    ))}
-                </div>
-                {data && data.length === 0 ? (
-                  <h1 className="text-center w-full pb-[100px] text-[20px]">
-                    No products Found!
-                  </h1>
-                ) : null}
+            <div className={`${styles.section}`}>
+              <div className="grid grid-cols-1 gap-[20px] md:grid-cols-2 md:gap-[25px] lg:grid-cols-3 lg:gap-[25px] xl:grid-cols-4 xl:gap-[30px] mb-12">
+                {data &&
+                  data.map((i, index) => <ProductCard data={i} key={index} />)}
               </div>
+              {data && data.length === 0 ? (
+                <h1 className="text-center w-full pb-[100px] text-[20px]">
+                  No products Found!
+                </h1>
+              ) : null}
             </div>
           </div>
           <Footer />

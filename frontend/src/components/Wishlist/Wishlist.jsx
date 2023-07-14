@@ -93,7 +93,6 @@ const Wishlist = ({ setOpenWishlist }) => {
         }
       }
     }
-    console.log("wishlist page");
     return <h1>wishlist</h1>;
 
     // return;

@@ -21,7 +21,6 @@ export default function HeroCarousel() {
       url: "/homepage/herosection_5.webp",
     },
   ];
-  console.log({ slides });
   const settings = {
     dots: true,
     infinite: true,
@@ -30,26 +29,18 @@ export default function HeroCarousel() {
     slidesToScroll: 1,
     adaptiveHeight: true,
     arrows: true,
-    autoplaySpeed:2200,
-    autoplay:true,
-    
+    autoplaySpeed: 2200,
+    autoplay: true,
   };
   return (
-    <div className="py-6">
-      {/* <img src="/homepage/herosection.webp" /> */}
-
-      {/* <img src="/homepage/herosection_1.webp" /> */}
+    <div className="py-6 px-2">
       <Slider {...settings}>
         {slides.map((slide) => (
-          <div className="border bottom-1">
+          <div className="border bottom-1" key={slide.url}>
             <img src={slide.url} />
           </div>
         ))}
-        {/* <div>
-            <img src="/homepage/herosection_2.webp" />
-          </div> */}
       </Slider>
     </div>
   );
-};
-
+}

@@ -36,7 +36,6 @@ const ProfileContent = ({ active }) => {
   const [avatar, setAvatar] = useState(null);
   const dispatch = useDispatch();
 
-  console.log("ProfileContent page");
   useEffect(() => {
     if (error) {
       toast.error(error);
@@ -205,9 +204,7 @@ const AllOrders = () => {
   const { user } = useSelector((state) => state.user);
   const { orders,allOrders } = useSelector((state) => state.order);
   const dispatch = useDispatch();
-  console.log("profile content orders :", orders);
 
-  console.log("profile content all orders :", allOrders);
   useEffect(() => {
     dispatch(getAllOrdersOfUser(user._id));
     dispatch(getAllOrdersOfAllUsers());

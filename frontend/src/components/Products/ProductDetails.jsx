@@ -146,7 +146,7 @@ const ProductDetails = ({ data }) => {
                   alt=""
                   className="w-[80%]"
                 />
-                <div className="w-full flex">
+                <div className="w-full flex gap-4 p-4">
                   {data &&
                     data.images.map((i, index) => (
                       <div
@@ -278,10 +278,6 @@ const ProductDetailsInfo = ({
   averageRating,
 }) => {
   const [active, setActive] = useState(1);
-  // console.log("data", data);
-  // console.log("products", products);
-  // console.log("totalReviewsLength", totalReviewsLength);
-  // console.log("averageRating", averageRating);
   return (
     <div className="bg-[#f5f6fb] px-3 800px:px-10 py-2 rounded">
       <div className="w-full flex justify-between border-b pt-10 pb-2">

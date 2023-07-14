@@ -211,7 +211,7 @@ export const categoriesData = [
   },
   {
     id: 4,
-    title: "Fashion",
+    title: "Cloths",
     subTitle: "",
     image_Url: "/Category/fashion.jpg",
   },

@@ -20,7 +20,6 @@ const OrderDetails = () => {
 
   const { id } = useParams();
 
-  console.log("orders", orders);
 
   useEffect(() => {
     dispatch(getAllOrdersOfShop(seller._id));
@@ -68,7 +67,6 @@ const OrderDetails = () => {
       });
   };
 
-  console.log(data?.status);
 
   return (
     <div className={`py-4 min-h-screen ${styles.section}`}>

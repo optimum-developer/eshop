@@ -47,11 +47,10 @@ const ProductCard = ({ data, isEvent }) => {
   const [click, setClick] = useState(false);
   const navigate = useNavigate();
 
-  // console.log({ isAuthenticated });
+  // ({ isAuthenticated });
 
   const removeFromWishlistHandler = async (data) => {
     setClick(!click);
-    console.log("removeFromWishlistHandle data._id,", data._id);
     try {
       const wishlist = await axios.delete(
         `${server}/wishlist/delete-wishlist-item`,
@@ -80,7 +79,6 @@ const ProductCard = ({ data, isEvent }) => {
 
   const addToWishlistHandler = async (data) => {
     if (!isAuthenticated) {
-      console.log("not authenticated");
       navigate("/login");
     }
     setClick(!click);

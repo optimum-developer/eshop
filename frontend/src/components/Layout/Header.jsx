@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
 import styles from "../../styles/styles";
 import { categoriesData, productData } from "../../static/data";
@@ -34,6 +34,8 @@ const Header = ({ activeHeading }) => {
   const [openCart, setOpenCart] = useState(false);
   const [openWishlist, setOpenWishlist] = useState(false);
   const [open, setOpen] = useState(false);
+  const [clickOutside, setClickOutside] = useState(false);
+  const searchRef = useRef(null);
 
   const handleSearchChange = (e) => {
     const term = e.target.value;
@@ -64,6 +66,20 @@ const Header = ({ activeHeading }) => {
     }
   });
 
+  useEffect(() => {
+    // document.addEventListener("click", handleClickOutside, true);
+  }, []);
+
+  const handleClickOutside = (e) => {
+    console.log(e.target);
+    console.log(searchRef.current);
+
+    if (!searchRef.current.contains(e.target)) {
+      console.log("click outside", searchRef.current);
+    } else {
+      console.log("click inside input field");
+    }
+  };
   return (
     <>
       <div className={`${styles.section}`}>
@@ -87,7 +103,7 @@ const Header = ({ activeHeading }) => {
           </Link>
           {/* search box */}
           <div className=" w-full py-2 md:py-0 md:w-[50%] relative">
-            <div className="h-[40px] w-full px-2 border-[#3957db] border-[2px] rounded-md flex justify-between bg-white">
+            <div className="h-[40px] w-full px-2 transition ease-in-out delay-850 border shadow-sm border-slate-300 hover:border-sky-500 hover:scale-120 duration-300  rounded-md flex justify-between bg-white">
               <input
                 type="text"
                 placeholder="Search Product..."
@@ -124,7 +140,7 @@ const Header = ({ activeHeading }) => {
 
           <div className={`${styles.button}`}>
             <Link to={`${isSeller ? "/dashboard" : "/shop-create"}`}>
-              <h1 className="text-[#fff] flex items-center">
+              <h1 className="text-[#fff] flex items-center transition ease-in-out delay-150 hover:translate-x-1 duration-300">
                 {isSeller ? "Go Dashboard" : "Become Seller"}{" "}
                 <IoIosArrowForward className="ml-1" />
               </h1>
@@ -303,12 +319,15 @@ const Header = ({ activeHeading }) => {
                 <input
                   type="search"
                   placeholder="Search Product..."
-                  className="h-[40px] w-full px-2 border-[#3957db] border-[2px] rounded-md"
+                  className="h-[40px] w-full px-2 border shadow-sm border-slate-300 focus:outline-none focus:border-sky-500 focus:ring-sky-500 rounded-md"
                   value={searchTerm}
                   onChange={handleSearchChange}
                 />
                 {searchData && (
-                  <div className="absolute bg-[#fff] z-10 shadow w-full left-0 p-3">
+                  <div
+                    ref={searchRef}
+                    className="absolute bg-[#fff] z-10 shadow w-full left-0 p-3"
+                  >
                     {searchData.map((i) => {
                       const d = i.name;
 

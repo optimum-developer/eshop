@@ -48,7 +48,6 @@ const CreateProduct = () => {
     setImages((prevImages) => [...prevImages, ...files]);
   };
 
-  console.log(images);
 
   const handleSubmit = (e) => {
     e.preventDefault();

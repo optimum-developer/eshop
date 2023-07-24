@@ -15,6 +15,8 @@ import {
   removeFromWishlist,
 } from "../../redux/actions/wishlist";
 
+import { setWishlistOnload } from "../../redux/reducers/addtowishlist";
+
 import { getAllOrdersOfAllUsers } from "../../redux/actions/order";
 import { setCartOnLoad } from "../../redux/reducers/addtocart";
 import { addTocart } from "../../redux/actions/cart";
@@ -23,7 +25,7 @@ import Ratings from "./Ratings";
 import axios from "axios";
 
 const ProductDetails = ({ data }) => {
-  const { wishlist } = useSelector((state) => state.wishlist);
+  const { wishlist } = useSelector((state) => state.addwishlist);
   const { cart } = useSelector((state) => state.cart);
   const { user, isAuthenticated } = useSelector((state) => state.user);
   const { products } = useSelector((state) => state.products);
@@ -34,12 +36,13 @@ const ProductDetails = ({ data }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const userId = user?._id;
-
   const cartProductList = items.map((el) => el.product);
+  const wishlistProduct = wishlist.map((el) => el.product);
 
   useEffect(() => {
     dispatch(getAllProductsShop(data && data?.shop._id));
     dispatch(getAllOrdersOfAllUsers());
+
     if (wishlist && wishlist.find((i) => i._id === data?._id)) {
       setClick(true);
     } else {
@@ -57,14 +60,66 @@ const ProductDetails = ({ data }) => {
     }
   };
 
-  const removeFromWishlistHandler = (data) => {
+  // const removeFromWishlistHandler = (data) => {
+  //   setClick(!click);
+  //   dispatch(removeFromWishlist(data));
+  // };
+
+  // const addToWishlistHandler = (data) => {
+  //   setClick(!click);
+  //   dispatch(addToWishlist(data));
+  // };
+
+  const removeFromWishlistHandler = async (data) => {
     setClick(!click);
-    dispatch(removeFromWishlist(data));
+    try {
+      const wishlist = await axios.delete(
+        `${server}/wishlist/delete-wishlist-item`,
+        {
+          data: {
+            userId: userId,
+            productId: data._id,
+          },
+        }
+      );
+
+      const wishlistData = await axios.post(
+        `${server}/wishlist/get-wishlist-item`,
+        {
+          userId: userId,
+        }
+      );
+      dispatch(setWishlistOnload(wishlistData.data.wishlistByUserId));
+      toast.success("Item deleted to wishlist successfully!");
+    } catch (error) {
+      toast.error(error.response.data.message);
+    }
+
+    // dispatch(removeFromWishlist(data));
   };
 
-  const addToWishlistHandler = (data) => {
+  const addToWishlistHandler = async (data) => {
+    if (!isAuthenticated) {
+      navigate("/login");
+    }
     setClick(!click);
-    dispatch(addToWishlist(data));
+    try {
+      const wishlist = await axios.post(`${server}/wishlist/add-to-wishlist`, {
+        userId: user._id,
+        product: data,
+      });
+
+      const wishlistData = await axios.post(
+        `${server}/wishlist/get-wishlist-item`,
+        {
+          userId: userId,
+        }
+      );
+      dispatch(setWishlistOnload(wishlistData.data.wishlistByUserId));
+      toast.success("Item added to wishlist successfully!");
+    } catch (error) {
+      toast.error(error.response.data.message);
+    }
   };
 
   const addToCartHandler = async (id) => {
@@ -134,6 +189,14 @@ const ProductDetails = ({ data }) => {
     }
   };
 
+  useEffect(() => {
+    if (
+      wishlistProduct &&
+      wishlistProduct.find((product) => product._id === data._id)
+    )
+      setClick(true);
+    else setClick(false);
+  }, [wishlistProduct]);
   return (
     <div className="bg-white">
       {data ? (
@@ -232,7 +295,7 @@ const ProductDetails = ({ data }) => {
                     <img
                       src={`${backend_url}${data?.shop?.avatar}`}
                       alt=""
-                      className="w-[50px] h-[50px] rounded-full mr-2"
+                      className="w-[50px] h-[50px] rounded-full mr-2 object-cover"
                     />
                   </Link>
                   <div className="pr-8">

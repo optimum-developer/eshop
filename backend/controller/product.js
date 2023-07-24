@@ -1,5 +1,10 @@
 const express = require("express");
-const { isSeller, isAuthenticated, isAdmin } = require("../middleware/auth");
+const {
+  isSeller,
+  isAuthenticated,
+  isAdminAuthenticated,
+  isAdmin,
+} = require("../middleware/auth");
 const catchAsyncErrors = require("../middleware/catchAsyncErrors");
 const router = express.Router();
 const Product = require("../model/product");
@@ -96,7 +101,9 @@ router.get(
   "/get-all-products",
   catchAsyncErrors(async (req, res, next) => {
     try {
-      const products = await Product.find().sort({ createdAt: -1 });
+      const products = await Product.find({ approval: "approved" }).sort({
+        createdAt: -1,
+      });
 
       res.status(201).json({
         success: true,
@@ -169,10 +176,37 @@ router.put(
 // all products --- for admin
 router.get(
   "/admin-all-products",
-  isAuthenticated,
-  isAdmin("Admin"),
+  isAdminAuthenticated,
   catchAsyncErrors(async (req, res, next) => {
     try {
+      const products = await Product.find().sort({
+        createdAt: -1,
+      });
+      res.status(201).json({
+        success: true,
+        products,
+      });
+    } catch (error) {
+      return next(new ErrorHandler(error.message, 500));
+    }
+  })
+);
+
+router.put(
+  "/update-approval-status",
+  isAdminAuthenticated,
+  catchAsyncErrors(async (req, res, next) => {
+    try {
+      const { id, value } = req.body;
+
+      const product = await Product.findByIdAndUpdate(
+        { _id: id },
+        { approval: value },
+        { new: true }
+      );
+
+      await product.save();
+
       const products = await Product.find().sort({
         createdAt: -1,
       });

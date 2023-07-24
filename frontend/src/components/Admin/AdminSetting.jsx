@@ -4,18 +4,22 @@ import { backend_url, server } from "../../server";
 import { AiOutlineCamera } from "react-icons/ai";
 import styles from "../../styles/styles";
 import axios from "axios";
-import { loadSeller } from "../../redux/actions/user";
+import { loadAdmin } from "../../redux/actions/user";
 import { toast } from "react-toastify";
 
-const ShopSettings = () => {
-  const { seller } = useSelector((state) => state.seller);
-  const [avatar,setAvatar] = useState();
-  const [name,setName] = useState(seller && seller.name);
-  const [description,setDescription] = useState(seller && seller.description ? seller.description : "");
-  const [address,setAddress] = useState(seller && seller.address);
-  const [phoneNumber,setPhoneNumber] = useState(seller && seller.phoneNumber);
-  const [zipCode,setZipcode] = useState(seller && seller.zipCode);
+const AdminSettings = () => {
+  //   const { seller } = useSelector((state) => state.seller);
+  const { user } = useSelector((state) => state.admin);
 
+  const [avatar, setAvatar] = useState();
+  const [name, setName] = useState(user && user.name);
+  const [description, setDescription] = useState(
+    user && user.description ? user.description : ""
+  );
+  const [address, setAddress] = useState(user && user.address);
+  const [phoneNumber, setPhoneNumber] = useState(user && user.phoneNumber);
+  const [zipCode, setZipcode] = useState(user && user.zipCode);
+  console.log({ user });
 
   const dispatch = useDispatch();
 
@@ -27,39 +31,46 @@ const ShopSettings = () => {
     const formData = new FormData();
 
     formData.append("image", e.target.files[0]);
-    
-    await axios.put(`${server}/shop/update-shop-avatar`, formData,{
+
+    await axios
+      .put(`${server}/shop/update-shop-avatar`, formData, {
         headers: {
-            "Content-Type": "multipart/form-data",
+          "Content-Type": "multipart/form-data",
         },
         withCredentials: true,
-    }).then((res) => {
-        dispatch(loadSeller());
-        toast.success("Avatar updated successfully!")
-    }).catch((error) => {
+      })
+      .then((res) => {
+        dispatch(loadAdmin());
+        toast.success("Avatar updated successfully!");
+      })
+      .catch((error) => {
         toast.error(error.response.data.message);
-    })
-
+      });
   };
 
   const updateHandler = async (e) => {
     e.preventDefault();
-    
-    await axios.put(`${server}/shop/update-seller-info`, {
-        name,
-        address,
-        zipCode,
-        phoneNumber,
-        description,
-    }, {withCredentials: true}).then((res) => {
-        toast.success("Shop info updated succesfully!");
-        dispatch(loadSeller());
-    }).catch((error)=> {
+
+    await axios
+      .put(
+        `${server}/user/update-user-info`,
+        {
+          name,
+          address,
+          zipCode,
+          phoneNumber,
+          description,
+        },
+        { withCredentials: true }
+      )
+      .then((res) => {
+        toast.success("Admin info updated succesfully!");
+        dispatch(loadAdmin());
+      })
+      .catch((error) => {
         toast.error(error.response.data.message);
-    })
+      });
   };
-
-
 
   return (
     <div className="w-full min-h-screen flex flex-col items-center">
@@ -68,7 +79,9 @@ const ShopSettings = () => {
           <div className="relative">
             <img
               src={
-                avatar ? URL.createObjectURL(avatar) : `${backend_url}/${seller.avatar}`
+                avatar
+                  ? URL.createObjectURL(avatar)
+                  : `${backend_url}/${user.avatar}`
               }
               alt=""
               className="w-[200px] h-[200px] rounded-full cursor-pointer object-cover"
@@ -99,7 +112,7 @@ const ShopSettings = () => {
             </div>
             <input
               type="name"
-              placeholder={`${seller.name}`}
+              placeholder={`${user.name}`}
               value={name}
               onChange={(e) => setName(e.target.value)}
               className={`${styles.input} !w-[95%] mb-4 800px:mb-0`}
@@ -113,8 +126,8 @@ const ShopSettings = () => {
             <input
               type="name"
               placeholder={`${
-                seller?.description
-                  ? seller.description
+                user?.description
+                  ? user.description
                   : "Enter your shop description"
               }`}
               value={description}
@@ -128,7 +141,7 @@ const ShopSettings = () => {
             </div>
             <input
               type="name"
-              placeholder={seller?.address}
+              placeholder={user?.address}
               value={address}
               onChange={(e) => setAddress(e.target.value)}
               className={`${styles.input} !w-[95%] mb-4 800px:mb-0`}
@@ -142,7 +155,7 @@ const ShopSettings = () => {
             </div>
             <input
               type="number"
-              placeholder={seller?.phoneNumber}
+              placeholder={user?.phoneNumber}
               value={phoneNumber}
               onChange={(e) => setPhoneNumber(e.target.value)}
               className={`${styles.input} !w-[95%] mb-4 800px:mb-0`}
@@ -156,7 +169,7 @@ const ShopSettings = () => {
             </div>
             <input
               type="number"
-              placeholder={seller?.zipCode}
+              placeholder={user?.zipCode}
               value={zipCode}
               onChange={(e) => setZipcode(e.target.value)}
               className={`${styles.input} !w-[95%] mb-4 800px:mb-0`}
@@ -179,4 +192,4 @@ const ShopSettings = () => {
   );
 };
 
-export default ShopSettings;
+export default AdminSettings;

@@ -48,7 +48,6 @@ const EventCard = ({ active, data }) => {
         }
       }
     }
-
   };
   return (
     <div
@@ -57,11 +56,11 @@ const EventCard = ({ active, data }) => {
       } lg:flex p-2`}
     >
       {data && (
-        <div className="flex gap-8">
-          <div className="w-full lg:-w[50%] m-auto">
+        <div className="flex flex-wrap justify-evenly p-6">
+          <div className="" style={{ maxWidth: "400px" }}>
             <img src={`${backend_url}${data?.images[0]}`} alt="" />
           </div>
-          <div className="w-full lg:[w-50%] flex flex-col justify-center">
+          <div className="basis-1/2 flex flex-col justify-center px-6 py-6">
             <h2 className={`${styles.productTitle}`}>{data?.name}</h2>
             <p>{data?.description}</p>
             <div className="flex py-2 justify-between">

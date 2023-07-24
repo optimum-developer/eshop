@@ -21,6 +21,11 @@ import {
   OrderDetailsPage,
   TrackOrderPage,
   UserInbox,
+  AdminSignupPage,
+  AdminLogin,
+  AdminActivationPage,
+  AdminSettingsPage,
+  AdminHomePage,
 } from "./routes/Routes.js";
 import {
   ShopDashboardPage,
@@ -44,12 +49,12 @@ import {
   AdminDashboardOrders,
   AdminDashboardProducts,
   AdminDashboardEvents,
-  AdminDashboardWithdraw
+  AdminDashboardWithdraw,
 } from "./routes/AdminRoutes";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Store from "./redux/store";
-import { loadSeller, loadUser } from "./redux/actions/user";
+import { loadSeller, loadUser, loadAdmin } from "./redux/actions/user";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import ProtectedAdminRoute from "./routes/ProtectedAdminRoute";
 import { ShopHomePage } from "./ShopRoutes.js";
@@ -71,6 +76,7 @@ const App = () => {
   useEffect(() => {
     Store.dispatch(loadUser());
     Store.dispatch(loadSeller());
+    Store.dispatch(loadAdmin());
     Store.dispatch(getAllProducts());
     Store.dispatch(getAllEvents());
     getStripeApikey();
@@ -99,6 +105,10 @@ const App = () => {
         <Route
           path="/activation/:activation_token"
           element={<ActivationPage />}
+        />
+        <Route
+          path="/admin/activation/:activation_token"
+          element={<AdminActivationPage />}
         />
         <Route
           path="/seller/activation/:activation_token"
@@ -260,61 +270,27 @@ const App = () => {
           }
         />
         {/* Admin Routes */}
+        <Route path="/admin/sign-up" element={<AdminSignupPage />} />
+        <Route path="/admin/login" element={<AdminLogin />} />
+
+        <Route path="/admin/dashboard" element={<AdminDashboardPage />} />
+        <Route path="/admin-users" element={<AdminDashboardUsers />} />
+        <Route path="/admin-sellers" element={<AdminDashboardSellers />} />
+        <Route path="/admin-orders" element={<AdminDashboardOrders />} />
+        <Route path="/admin-products" element={<AdminDashboardProducts />} />
+        <Route path="/admin-events" element={<AdminDashboardEvents />} />
         <Route
-          path="/admin/dashboard"
+          path="/admin/profile"
           element={
-            <ProtectedAdminRoute>
-              <AdminDashboardPage />
-            </ProtectedAdminRoute>
+            // <ProtectedRoute>
+            <AdminSettingsPage />
+            // </ProtectedRoute>
           }
         />
+        <Route path="/admin/:id" element={<AdminHomePage />} />
         <Route
-          path="/admin-users"
-          element={
-            <ProtectedAdminRoute>
-              <AdminDashboardUsers />
-            </ProtectedAdminRoute>
-          }
-        />
-        <Route
-          path="/admin-sellers"
-          element={
-            <ProtectedAdminRoute>
-              <AdminDashboardSellers />
-            </ProtectedAdminRoute>
-          }
-        />
-        <Route
-          path="/admin-orders"
-          element={
-            <ProtectedAdminRoute>
-              <AdminDashboardOrders />
-            </ProtectedAdminRoute>
-          }
-        />
-         <Route
-          path="/admin-products"
-          element={
-            <ProtectedAdminRoute>
-              <AdminDashboardProducts />
-            </ProtectedAdminRoute>
-          }
-        />
-         <Route
-          path="/admin-events"
-          element={
-            <ProtectedAdminRoute>
-              <AdminDashboardEvents />
-            </ProtectedAdminRoute>
-          }
-        />
-         <Route
           path="/admin-withdraw-request"
-          element={
-            <ProtectedAdminRoute>
-              <AdminDashboardWithdraw />
-            </ProtectedAdminRoute>
-          }
+          element={<AdminDashboardWithdraw />}
         />
       </Routes>
       <ToastContainer

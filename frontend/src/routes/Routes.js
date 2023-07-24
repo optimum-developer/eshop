@@ -1,5 +1,6 @@
 import LoginPage from "../pages/Login";
 import SignupPage from "../pages/SignupPage";
+import AdminSignupPage from "../pages/AdminSignUpPage";
 import ActivationPage from "../pages/ActivationPage";
 import HomePage from "../pages/HomePage";
 import ProductsPage from "../pages/ProductsPage";
@@ -17,25 +18,34 @@ import ShopLoginPage from "../pages/ShopLoginPage";
 import OrderDetailsPage from "../pages/OrderDetailsPage";
 import TrackOrderPage from "../pages/TrackOrderPage";
 import UserInbox from "../pages/UserInbox.jsx";
+import AdminLogin from "../components/Admin/Layout/AdminLogin";
+import AdminActivationPage from "../pages/AdminActivationPage";
+import AdminSettingsPage from "../pages/Admin/AdminSettingsPage";
+import AdminHomePage from "../pages/Admin/AdminHomePage";
 
-export { 
-    LoginPage,
-    SignupPage,
-    ActivationPage,
-    HomePage,
-    ProductsPage,
-    BestSellingPage,
-    EventsPage,
-    FAQPage,
-    CheckoutPage,
-    PaymentPage,
-    OrderSuccessPage,
-    ProductDetailsPage,
-    ProfilePage,
-    ShopCreatePage,
-    SellerActivationPage,
-    ShopLoginPage,
-    OrderDetailsPage,
-    TrackOrderPage,
-    UserInbox
+export {
+  LoginPage,
+  SignupPage,
+  ActivationPage,
+  HomePage,
+  ProductsPage,
+  BestSellingPage,
+  EventsPage,
+  FAQPage,
+  CheckoutPage,
+  PaymentPage,
+  OrderSuccessPage,
+  ProductDetailsPage,
+  ProfilePage,
+  ShopCreatePage,
+  SellerActivationPage,
+  ShopLoginPage,
+  OrderDetailsPage,
+  TrackOrderPage,
+  UserInbox,
+  AdminSignupPage,
+  AdminLogin,
+  AdminActivationPage,
+  AdminSettingsPage,
+  AdminHomePage
 };

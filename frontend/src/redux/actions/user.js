@@ -43,6 +43,29 @@ export const loadSeller = () => async (dispatch) => {
   }
 };
 
+// load Admin
+export const loadAdmin = () => async (dispatch) => {
+  try {
+    dispatch({
+      type: "LoadAdminRequest",
+    });
+    const { data } = await axios.get(`${server}/admin/getAdmin`, {
+      withCredentials: true,
+    });
+
+    console.log("Action admin", data);
+    dispatch({
+      type: "LoadAdminSuccess",
+      payload: data.user,
+    });
+  } catch (error) {
+    dispatch({
+      type: "LoadAdminFail",
+      payload: error.response.data.message,
+    });
+  }
+};
+
 // user update information
 export const updateUserInformation =
   (name, email, phoneNumber, password) => async (dispatch) => {
@@ -81,7 +104,7 @@ export const updateUserInformation =
 
 // update user address
 export const updatUserAddress =
-  (country, city, address1, address2, zipCode, addressType) =>
+  (country, city, address1, address2, zipCode, addressType, addressId) =>
   async (dispatch) => {
     try {
       dispatch({
@@ -97,6 +120,7 @@ export const updatUserAddress =
           address2,
           zipCode,
           addressType,
+          addressId,
         },
         { withCredentials: true }
       );

@@ -3,6 +3,7 @@ import {
   AiOutlineArrowRight,
   AiOutlineCamera,
   AiOutlineDelete,
+  AiOutlineEdit,
 } from "react-icons/ai";
 import { useDispatch, useSelector } from "react-redux";
 import { backend_url, server } from "../../server";
@@ -35,6 +36,8 @@ const ProfileContent = ({ active }) => {
   const [password, setPassword] = useState("");
   const [avatar, setAvatar] = useState(null);
   const dispatch = useDispatch();
+
+  // console.log("user", user.addresses);
 
   useEffect(() => {
     if (error) {
@@ -202,9 +205,9 @@ const ProfileContent = ({ active }) => {
 
 const AllOrders = () => {
   const { user } = useSelector((state) => state.user);
-  const { orders,allOrders } = useSelector((state) => state.order);
+  const { orders, allOrders } = useSelector((state) => state.order);
   const dispatch = useDispatch();
-
+  console.log("user", user);
   useEffect(() => {
     dispatch(getAllOrdersOfUser(user._id));
     dispatch(getAllOrdersOfAllUsers());
@@ -544,6 +547,9 @@ const Address = () => {
   const [address1, setAddress1] = useState("");
   const [address2, setAddress2] = useState("");
   const [addressType, setAddressType] = useState("");
+  const [updateValue, setUpdateValue] = useState("");
+  const [buttonType, setButtonType] = useState("Submit");
+
   const { user } = useSelector((state) => state.user);
   const dispatch = useDispatch();
 
@@ -561,7 +567,8 @@ const Address = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    console.log("handle submit");
+    const addressId = "";
     if (addressType === "" || country === "" || city === "") {
       toast.error("Please fill all the fields!");
     } else {
@@ -572,7 +579,8 @@ const Address = () => {
           address1,
           address2,
           zipCode,
-          addressType
+          addressType,
+          addressId
         )
       );
       setOpen(false);
@@ -585,6 +593,53 @@ const Address = () => {
     }
   };
 
+  const handleUpdate = async (e, item) => {
+    e.preventDefault();
+    console.log("handle update");
+
+    const addressId = updateValue;
+    console.log({ addressId });
+    if (addressType === "" || country === "" || city === "") {
+      toast.error("Please fill all the fields!");
+    } else {
+      dispatch(
+        updatUserAddress(
+          country,
+          city,
+          address1,
+          address2,
+          zipCode,
+          addressType,
+          addressId
+        )
+      );
+      // dispatch(loadUser());
+      setOpen(false);
+      setCountry("");
+      setCity("");
+      setAddress1("");
+      setAddress2("");
+      setZipCode(null);
+      setAddressType("");
+    }
+  };
+  const handleAdd = () => {
+    setButtonType("Submit");
+    console.log("submit");
+    setOpen(true);
+  };
+
+  const handleEdit = (item) => {
+    setButtonType("Update");
+    setUpdateValue(item._id);
+    setCountry(item.country);
+    setCity(item.city);
+    setAddress1(item.address1);
+    setAddress2(item.address2);
+    setZipCode(item.zipCode);
+    setAddressType(item.addressType);
+    setOpen(true);
+  };
   const handleDelete = (item) => {
     const id = item._id;
     dispatch(deleteUserAddress(id));
@@ -606,7 +661,12 @@ const Address = () => {
               Add New Address
             </h1>
             <div className="w-full">
-              <form aria-required onSubmit={handleSubmit} className="w-full">
+              <form
+                aria-required
+                onSubmit={buttonType === "Submit" ? handleSubmit : handleUpdate}
+                className="w-full"
+              >
+                {buttonType === "Submit" ? "handleSubmit" : "handleUpdate"}
                 <div className="w-full block p-4">
                   <div className="w-full pb-2">
                     <label className="block pb-2">Country</label>
@@ -719,6 +779,7 @@ const Address = () => {
                     <input
                       type="submit"
                       className={`${styles.input} mt-5 cursor-pointer`}
+                      value={buttonType}
                       required
                       readOnly
                     />
@@ -733,10 +794,7 @@ const Address = () => {
         <h1 className="text-[25px] font-[600] text-[#000000ba] pb-2">
           My Addresses
         </h1>
-        <div
-          className={`${styles.button} !rounded-md`}
-          onClick={() => setOpen(true)}
-        >
+        <div className={`${styles.button} !rounded-md`} onClick={handleAdd}>
           <span className="text-[#fff]">Add New</span>
         </div>
       </div>
@@ -760,7 +818,13 @@ const Address = () => {
                 {user && user.phoneNumber}
               </h6>
             </div>
+
             <div className="min-w-[10%] flex items-center justify-between pl-8">
+              <AiOutlineEdit
+                size={25}
+                className="cursor-pointer"
+                onClick={() => handleEdit(item)}
+              />
               <AiOutlineDelete
                 size={25}
                 className="cursor-pointer"

@@ -7,16 +7,18 @@ export const getAllSellers = () => async (dispatch) => {
     dispatch({
       type: "getAllSellersRequest",
     });
-
-    const { data } = await axios.get(`${server}/shop/getSeller`, {
+    console.log("getAllSellers reducer");
+    const { data } = await axios.get(`${server}/shop/admin-all-sellers`, {
       withCredentials: true,
     });
+    console.log(data);
 
     dispatch({
       type: "getAllSellersSuccess",
       payload: data.sellers,
     });
   } catch (error) {
+    console.log("error");
     dispatch({
       type: "getAllSellerFailed",
       //   payload: error.response.data.message,

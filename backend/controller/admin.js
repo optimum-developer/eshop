@@ -1,6 +1,6 @@
 const express = require("express");
 const path = require("path");
-const User = require("../model/user");
+const Admin = require("../model/admin");
 const router = express.Router();
 const { upload } = require("../multer");
 const ErrorHandler = require("../utils/ErrorHandler");
@@ -9,13 +9,17 @@ const fs = require("fs");
 const jwt = require("jsonwebtoken");
 const sendMail = require("../utils/sendMail");
 const sendToken = require("../utils/jwtToken");
-const { isAuthenticated, isAdmin ,isAdminAuthenticated} = require("../middleware/auth");
-const { ObjectId } = require("mongodb");
+const {
+  isAuthenticated,
+  isAdmin,
+  isAdminAuthenticated,
+} = require("../middleware/auth");
 
-router.post("/create-user", upload.single("file"), async (req, res, next) => {
+router.post("/create-admin", upload.single("file"), async (req, res, next) => {
+  console.log("/create-admin controller");
   try {
     const { name, email, password } = req.body;
-    const userEmail = await User.findOne({ email });
+    const userEmail = await Admin.findOne({ email });
 
     if (userEmail) {
       const filename = req.file.filename;
@@ -42,7 +46,7 @@ router.post("/create-user", upload.single("file"), async (req, res, next) => {
     const activationToken = createActivationToken(user);
 
     // const activationUrl = `https://eshop-tutorial-cefl.vercel.app/activation/${activationToken}`;
-    const activationUrl = `http://localhost:3000/activation/${activationToken}`;
+    const activationUrl = `http://localhost:3000/admin/activation/${activationToken}`;
 
     try {
       await sendMail({
@@ -75,7 +79,6 @@ router.post(
   catchAsyncErrors(async (req, res, next) => {
     try {
       const { activation_token } = req.body;
-      console.log("req.body", req.body);
       const newUser = jwt.verify(
         activation_token,
         process.env.ACTIVATION_SECRET
@@ -86,12 +89,12 @@ router.post(
       }
       const { name, email, password, avatar } = newUser;
 
-      let user = await User.findOne({ email });
+      let user = await Admin.findOne({ email });
 
       if (user) {
         return next(new ErrorHandler("User already exists", 400));
       }
-      user = await User.create({
+      user = await Admin.create({
         name,
         email,
         avatar,
@@ -107,7 +110,7 @@ router.post(
 
 // login user
 router.post(
-  "/login-user",
+  "/login-admin",
   catchAsyncErrors(async (req, res, next) => {
     try {
       const { email, password } = req.body;
@@ -116,7 +119,7 @@ router.post(
         return next(new ErrorHandler("Please provide the all fields!", 400));
       }
 
-      const user = await User.findOne({ email }).select("+password");
+      const user = await Admin.findOne({ email }).select("+password");
 
       if (!user) {
         return next(new ErrorHandler("User doesn't exists!", 400));
@@ -139,11 +142,12 @@ router.post(
 
 // load user
 router.get(
-  "/getuser",
-  isAuthenticated,
+  "/getAdmin",
+  isAdminAuthenticated,
   catchAsyncErrors(async (req, res, next) => {
+    console.log("Request user", req.user.id);
     try {
-      const user = await User.findById(req.user.id);
+      const user = await Admin.findById(req.user.id);
 
       if (!user) {
         return next(new ErrorHandler("User doesn't exists", 400));
@@ -415,8 +419,7 @@ router.get(
 // all users --- for admin
 router.get(
   "/admin-all-users",
-  isAdminAuthenticated,
-  isAdmin("Admin"),
+  isAuthenticated,
   catchAsyncErrors(async (req, res, next) => {
     try {
       const users = await User.find().sort({
@@ -435,7 +438,7 @@ router.get(
 // delete users --- admin
 router.delete(
   "/delete-user/:id",
-  isAdminAuthenticated,
+  isAuthenticated,
   isAdmin("Admin"),
   catchAsyncErrors(async (req, res, next) => {
     try {

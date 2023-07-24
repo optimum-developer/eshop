@@ -23,10 +23,13 @@ import { setWishlistOnload } from "../../../redux/reducers/addtowishlist";
 
 const ProductDetailsCard = ({ setOpen, data }) => {
   const { cart } = useSelector((state) => state.cart);
-  const { wishlist } = useSelector((state) => state.wishlist);
+  const { wishlist } = useSelector((state) => state.addwishlist);
   const { isAuthenticated, user } = useSelector((state) => state.user);
   const { items } = useSelector((state) => state.addcart);
   const cartProductList = items.map((el) => el.product);
+const wishlistProduct=wishlist.map(el=>el.product)
+  console.log({wishlist});
+  console.log({data});
 
   const userId = user?._id;
   const dispatch = useDispatch();
@@ -84,6 +87,7 @@ const ProductDetailsCard = ({ setOpen, data }) => {
         `${server}/wishlist/delete-wishlist-item`,
         {
           data: {
+            userId: user._id,
             productId: data._id,
           },
         }
@@ -127,7 +131,7 @@ const ProductDetailsCard = ({ setOpen, data }) => {
   };
 
   useEffect(() => {
-    if (wishlist && wishlist.find((i) => i._id === data._id)) {
+    if (wishlistProduct && wishlistProduct.find((i) => i._id === data._id)) {
       setClick(true);
     } else {
       setClick(false);

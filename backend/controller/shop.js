@@ -6,7 +6,7 @@ const jwt = require("jsonwebtoken");
 const sendMail = require("../utils/sendMail");
 const sendToken = require("../utils/jwtToken");
 const Shop = require("../model/shop");
-const { isAuthenticated, isSeller, isAdmin } = require("../middleware/auth");
+const { isAuthenticated, isAdminAuthenticated,isSeller, isAdmin } = require("../middleware/auth");
 const { upload } = require("../multer");
 const catchAsyncErrors = require("../middleware/catchAsyncErrors");
 const ErrorHandler = require("../utils/ErrorHandler");
@@ -47,7 +47,7 @@ router.post("/create-shop", upload.single("file"), async (req, res, next) => {
     // const activationUrl = `https://eshop-tutorial-cefl.vercel.app/seller/activation/${activationToken}`;
     const activationUrl = `http://localhost:3000/seller/activation/${activationToken}`;
 
-    try {                       
+    try {
       await sendMail({
         email: seller.email,
         subject: "Activate your Shop",
@@ -106,7 +106,7 @@ router.post(
         phoneNumber,
       });
 
-      sendShopToken(seller, 201, res,email,password);
+      sendShopToken(seller, 201, res, email, password);
     } catch (error) {
       return next(new ErrorHandler(error.message, 500));
     }
@@ -150,6 +150,7 @@ router.get(
   "/getSeller",
   isSeller,
   catchAsyncErrors(async (req, res, next) => {
+    console.log("/getSeller", req.seller);
     try {
       const seller = await Shop.findById(req.seller._id);
 
@@ -266,9 +267,11 @@ router.put(
 // all sellers --- for admin
 router.get(
   "/admin-all-sellers",
-  isAuthenticated,
+  isAdminAuthenticated,
   isAdmin("Admin"),
+
   catchAsyncErrors(async (req, res, next) => {
+    console.log("req.body", req.body);
     try {
       const sellers = await Shop.find().sort({
         createdAt: -1,
@@ -286,7 +289,7 @@ router.get(
 // delete seller ---admin
 router.delete(
   "/delete-seller/:id",
-  isAuthenticated,
+  isAdminAuthenticated,
   isAdmin("Admin"),
   catchAsyncErrors(async (req, res, next) => {
     try {

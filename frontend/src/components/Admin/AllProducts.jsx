@@ -13,12 +13,40 @@ import { useState } from "react";
 
 const AllProducts = () => {
   const [data, setData] = useState([]);
+  const [selected, setSelected] = useState({});
 
   useEffect(() => {
-    axios.get(`${server}/product/admin-all-products`, {withCredentials: true}).then((res) => {
+    axios
+      .get(`${server}/product/admin-all-products`, { withCredentials: true })
+      .then((res) => {
         setData(res.data.products);
-    })
+      });
   }, []);
+  // console.log("selected", selected);
+  const handleOnApproval = async (e, id) => {
+    const { value } = e.target;
+    setSelected((prev) => ({ ...prev, [id]: value }));
+
+    try {
+      axios
+        .put(
+          `${server}/product/update-approval-status`,
+          {
+            id,
+            value,
+          },
+          {
+            withCredentials: true,
+          }
+        )
+        .then((res) => {
+          console.log({ res });
+          setData(res?.data?.products);
+        });
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const columns = [
     { field: "id", headerName: "Product Id", minWidth: 150, flex: 0.7 },
@@ -50,8 +78,31 @@ const AllProducts = () => {
       flex: 0.6,
     },
     {
+      field: "approval",
+      headerName: "Approval",
+      type: "string",
+      minWidth: 100,
+      flex: 0.6,
+      renderCell: (params) => {
+        const { id } = params;
+        const { name, customData } = params.row;
+        return (
+          <>
+            <select
+              value={selected[id] || customData.approval}
+              onChange={(e) => handleOnApproval(e, id)}
+            >
+              <option value="pending">Pending</option>
+              <option value="approved">Approved</option>
+              <option value="rejected">Rejected</option>
+            </select>
+          </>
+        );
+      },
+    },
+    {
       field: "Preview",
-      flex: 0.8,
+      flex: 0.5,
       minWidth: 100,
       headerName: "",
       type: "number",
@@ -73,27 +124,28 @@ const AllProducts = () => {
   const row = [];
 
   data &&
-  data.forEach((item) => {
+    data?.forEach((item) => {
       row.push({
         id: item._id,
         name: item.name,
         price: "US$ " + item.discountPrice,
         Stock: item.stock,
         sold: item?.sold_out,
+        customData: item,
       });
     });
-
+  // console.log({ data });
   return (
     <>
-        <div className="w-full mx-8 pt-1 mt-10 bg-white">
-          <DataGrid
-            rows={row}
-            columns={columns}
-            pageSize={10}
-            disableSelectionOnClick
-            autoHeight
-          />
-        </div>
+      <div className="w-full mx-8 pt-1 mt-10 bg-white">
+        <DataGrid
+          rows={row}
+          columns={columns}
+          pageSize={10}
+          disableSelectionOnClick
+          autoHeight
+        />
+      </div>
     </>
   );
 };

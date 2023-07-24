@@ -7,7 +7,6 @@ export const getAllSellers = () => async (dispatch) => {
     dispatch({
       type: "getAllSellersRequest",
     });
-    console.log("getAllSellers reducer");
     const { data } = await axios.get(`${server}/shop/admin-all-sellers`, {
       withCredentials: true,
     });

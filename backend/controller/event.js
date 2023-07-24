@@ -4,9 +4,16 @@ const { upload } = require("../multer");
 const Shop = require("../model/shop");
 const Event = require("../model/event");
 const ErrorHandler = require("../utils/ErrorHandler");
-const { isSeller, isAdmin, isAuthenticated ,isAdminAuthenticated} = require("../middleware/auth");
+const {
+  isSeller,
+  isAdmin,
+  isAuthenticated,
+  isAdminAuthenticated,
+} = require("../middleware/auth");
 const router = express.Router();
 const fs = require("fs");
+const { error } = require("console");
+const { findByIdAndUpdate } = require("../model/user");
 
 // create event
 router.post(
@@ -108,8 +115,8 @@ router.delete(
 // all events --- for admin
 router.get(
   "/admin-all-events",
-  isAuthenticated,
-  // isAdmin("Admin"),
+  isAdminAuthenticated,
+  isAdmin("Admin"),
   catchAsyncErrors(async (req, res, next) => {
     try {
       const events = await Event.find().sort({
@@ -125,4 +132,25 @@ router.get(
   })
 );
 
+router.put(
+  "/update-event-approval",
+  isAdminAuthenticated,
+  isAdmin("Admin"),
+  catchAsyncErrors(async (req, res, next) => {
+    const { id, value } = req.body;
+    try {
+      const events = await Event.findByIdAndUpdate(
+        { _id: id },
+        { approval: value }
+      );
+
+      res.status(201).json({
+        success: true,
+        events,
+      });
+    } catch (error) {
+      return next(new ErrorHandler(error.message, 500));
+    }
+  })
+);
 module.exports = router;

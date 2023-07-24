@@ -9,13 +9,16 @@ import axios from "axios";
 import { server } from "../../server";
 import { toast } from "react-toastify";
 import { getAllSellers } from "../../redux/actions/sellers";
+import { loadSeller } from "../../redux/actions/user";
+
 import { Link } from "react-router-dom";
 
 const AllSellers = () => {
   const dispatch = useDispatch();
-  const { sellers } = useSelector((state) => state.seller);
+  const { sellers, seller } = useSelector((state) => state.seller);
   const [open, setOpen] = useState(false);
   const [userId, setUserId] = useState("");
+  const [selected, setSelected] = useState({});
 
   useEffect(() => {
     dispatch(getAllSellers());
@@ -23,12 +26,40 @@ const AllSellers = () => {
 
   const handleDelete = async (id) => {
     await axios
-    .delete(`${server}/shop/delete-seller/${id}`, { withCredentials: true })
-    .then((res) => {
-      toast.success(res.data.message);
-    });
+      .delete(`${server}/shop/delete-seller/${id}`, { withCredentials: true })
+      .then((res) => {
+        toast.success(res.data.message);
+      });
 
-  dispatch(getAllSellers());
+    dispatch(getAllSellers());
+    dispatch(loadSeller());
+  };
+
+  const handleOnApproval = async (e, id, email, name) => {
+    const { value } = e.target;
+    setSelected((prev) => ({ ...prev, [id]: value }));
+
+    try {
+      axios
+        .put(
+          `${server}/shop/update-approval-status`,
+          {
+            id,
+            value,
+            email,
+            name,
+          },
+          {
+            withCredentials: true,
+          }
+        )
+        .then((res) => {
+          dispatch(getAllSellers());
+          dispatch(loadSeller());
+        });
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const columns = [
@@ -38,7 +69,7 @@ const AllSellers = () => {
       field: "name",
       headerName: "name",
       minWidth: 130,
-      flex: 0.7,
+      flex: 0.5,
     },
     {
       field: "email",
@@ -63,27 +94,50 @@ const AllSellers = () => {
       flex: 0.8,
     },
     {
-        field: "  ",
-        flex: 1,
-        minWidth: 150,
-        headerName: "Preview Shop",
-        type: "number",
-        sortable: false,
-        renderCell: (params) => {
-          return (
-            <>
+      field: "approval",
+      headerName: "Approval",
+      type: "string",
+      minWidth: 100,
+      flex: 0.6,
+      renderCell: (params) => {
+        const { id } = params;
+        const { name, customData, email } = params.row;
+        return (
+          <>
+            <select
+              value={selected[id] || customData.approval}
+              onChange={(e) => handleOnApproval(e, id, email, name)}
+            >
+              <option value="pending">Pending</option>
+              <option value="approved">Approved</option>
+              <option value="rejected">Rejected</option>
+            </select>
+          </>
+        );
+      },
+    },
+    {
+      field: "  ",
+      flex: 0.3,
+      minWidth: 150,
+      headerName: "Preview Shop",
+      type: "number",
+      sortable: false,
+      renderCell: (params) => {
+        return (
+          <>
             <Link to={`/shop/preview/${params.id}`}>
-            <Button>
+              <Button>
                 <AiOutlineEye size={20} />
               </Button>
             </Link>
-            </>
-          );
-        },
+          </>
+        );
       },
+    },
     {
       field: " ",
-      flex: 1,
+      flex: 0.3,
       minWidth: 150,
       headerName: "Delete Seller",
       type: "number",
@@ -102,20 +156,21 @@ const AllSellers = () => {
 
   const row = [];
   sellers &&
-  sellers.forEach((item) => {
+    sellers.forEach((item) => {
       row.push({
         id: item._id,
         name: item?.name,
         email: item?.email,
         joinedAt: item.createdAt.slice(0, 10),
         address: item.address,
+        customData: item,
       });
     });
 
   return (
     <div className="w-full flex justify-center pt-5">
       <div className="w-[97%]">
-        <h3 className="text-[22px] font-Poppins pb-2">All Users</h3>
+        <h3 className="text-[22px] font-Poppins pb-2">All Sellers</h3>
         <div className="w-full min-h-[45vh] bg-white rounded">
           <DataGrid
             rows={row}
@@ -143,7 +198,7 @@ const AllSellers = () => {
                 </div>
                 <div
                   className={`${styles.button} text-white text-[18px] !h-[42px] ml-4`}
-                  onClick={() =>  setOpen(false) || handleDelete(userId)}
+                  onClick={() => setOpen(false) || handleDelete(userId)}
                 >
                   confirm
                 </div>

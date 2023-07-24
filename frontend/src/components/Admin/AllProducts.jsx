@@ -23,7 +23,7 @@ const AllProducts = () => {
       });
   }, []);
   // console.log("selected", selected);
-  const handleOnApproval = async (e, id) => {
+  const handleOnApproval = async (e, id, email, name) => {
     const { value } = e.target;
     setSelected((prev) => ({ ...prev, [id]: value }));
 
@@ -34,13 +34,14 @@ const AllProducts = () => {
           {
             id,
             value,
+            email,
+            name,
           },
           {
             withCredentials: true,
           }
         )
         .then((res) => {
-          console.log({ res });
           setData(res?.data?.products);
         });
     } catch (error) {
@@ -85,12 +86,14 @@ const AllProducts = () => {
       flex: 0.6,
       renderCell: (params) => {
         const { id } = params;
-        const { name, customData } = params.row;
+        const { customData } = params.row;
+        const { email, name } = params.row.customData.shop;
+
         return (
           <>
             <select
               value={selected[id] || customData.approval}
-              onChange={(e) => handleOnApproval(e, id)}
+              onChange={(e) => handleOnApproval(e, id, email, name)}
             >
               <option value="pending">Pending</option>
               <option value="approved">Approved</option>

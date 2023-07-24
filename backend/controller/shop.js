@@ -6,7 +6,12 @@ const jwt = require("jsonwebtoken");
 const sendMail = require("../utils/sendMail");
 const sendToken = require("../utils/jwtToken");
 const Shop = require("../model/shop");
-const { isAuthenticated, isAdminAuthenticated,isSeller, isAdmin } = require("../middleware/auth");
+const {
+  isAuthenticated,
+  isAdminAuthenticated,
+  isSeller,
+  isAdmin,
+} = require("../middleware/auth");
 const { upload } = require("../multer");
 const catchAsyncErrors = require("../middleware/catchAsyncErrors");
 const ErrorHandler = require("../utils/ErrorHandler");
@@ -354,6 +359,42 @@ router.delete(
       res.status(201).json({
         success: true,
         seller,
+      });
+    } catch (error) {
+      return next(new ErrorHandler(error.message, 500));
+    }
+  })
+);
+
+router.put(
+  "/update-approval-status",
+  isAdminAuthenticated,
+  catchAsyncErrors(async (req, res, next) => {
+    try {
+      const { id, value, name, email } = req.body;
+      console.log({ email });
+
+      const shop = await Shop.findByIdAndUpdate(
+        { _id: id },
+        { approval: value },
+        { new: true }
+      );
+
+      await shop.save();
+
+      const shops = await Shop.find().sort({
+        createdAt: -1,
+      });
+
+      await sendMail({
+        email: email,
+        Subject: `Application ${value}`,
+        message: `Dear ${name}, Your registration for seller has been ${value}`,
+      });
+
+      res.status(201).json({
+        success: true,
+        shops,
       });
     } catch (error) {
       return next(new ErrorHandler(error.message, 500));

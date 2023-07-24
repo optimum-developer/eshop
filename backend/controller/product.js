@@ -12,6 +12,7 @@ const Order = require("../model/order");
 const Shop = require("../model/shop");
 const { upload } = require("../multer");
 const ErrorHandler = require("../utils/ErrorHandler");
+const sendMail = require("../utils/sendMail");
 const fs = require("fs");
 
 // create product
@@ -197,7 +198,7 @@ router.put(
   isAdminAuthenticated,
   catchAsyncErrors(async (req, res, next) => {
     try {
-      const { id, value } = req.body;
+      const { id, value, name, email } = req.body;
 
       const product = await Product.findByIdAndUpdate(
         { _id: id },
@@ -210,6 +211,13 @@ router.put(
       const products = await Product.find().sort({
         createdAt: -1,
       });
+
+      await sendMail({
+        email: email,
+        subject: `Product Approval`,
+        message: `Dear ${name},Your product ${product.name} has been ${value}`,
+      });
+
       res.status(201).json({
         success: true,
         products,

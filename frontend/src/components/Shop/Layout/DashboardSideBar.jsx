@@ -8,8 +8,11 @@ import { CiMoneyBill, CiSettings } from "react-icons/ci";
 import { Link } from "react-router-dom";
 import { BiMessageSquareDetail } from "react-icons/bi";
 import { HiOutlineReceiptRefund } from "react-icons/hi";
+import { useSelector } from "react-redux";
 
 const DashboardSideBar = ({ active }) => {
+  const { seller } = useSelector((state) => state.seller);
+
   return (
     <div className="w-full h-[90vh] bg-white shadow-sm overflow-y-scroll sticky top-0 left-0 z-10">
       {/* single item */}
@@ -57,25 +60,26 @@ const DashboardSideBar = ({ active }) => {
           </h5>
         </Link>
       </div>
-
-      <div className="w-full flex items-center p-4">
-        <Link
-          to="/dashboard-create-product"
-          className="w-full flex items-center"
-        >
-          <AiOutlineFolderAdd
-            size={30}
-            color={`${active === 4 ? "crimson" : "#555"}`}
-          />
-          <h5
-            className={`hidden 800px:block pl-2 text-[18px] font-[400] ${
-              active === 4 ? "text-[crimson]" : "text-[#555]"
-            }`}
+      {seller.approval === "approved" && (
+        <div className="w-full flex items-center p-4">
+          <Link
+            to="/dashboard-create-product"
+            className="w-full flex items-center"
           >
-            Create Product
-          </h5>
-        </Link>
-      </div>
+            <AiOutlineFolderAdd
+              size={30}
+              color={`${active === 4 ? "crimson" : "#555"}`}
+            />
+            <h5
+              className={`hidden 800px:block pl-2 text-[18px] font-[400] ${
+                active === 4 ? "text-[crimson]" : "text-[#555]"
+              }`}
+            >
+              Create Product
+            </h5>
+          </Link>
+        </div>
+      )}
 
       <div className="w-full flex items-center p-4">
         <Link to="/dashboard-events" className="w-full flex items-center">
@@ -92,22 +96,26 @@ const DashboardSideBar = ({ active }) => {
           </h5>
         </Link>
       </div>
-
-      <div className="w-full flex items-center p-4">
-        <Link to="/dashboard-create-event" className="w-full flex items-center">
-          <VscNewFile
-            size={30}
-            color={`${active === 6 ? "crimson" : "#555"}`}
-          />
-          <h5
-            className={`hidden 800px:block pl-2 text-[18px] font-[400] ${
-              active === 6 ? "text-[crimson]" : "text-[#555]"
-            }`}
+      {seller.approval === "approved" && (
+        <div className="w-full flex items-center p-4">
+          <Link
+            to="/dashboard-create-event"
+            className="w-full flex items-center"
           >
-            Create Event
-          </h5>
-        </Link>
-      </div>
+            <VscNewFile
+              size={30}
+              color={`${active === 6 ? "crimson" : "#555"}`}
+            />
+            <h5
+              className={`hidden 800px:block pl-2 text-[18px] font-[400] ${
+                active === 6 ? "text-[crimson]" : "text-[#555]"
+              }`}
+            >
+              Create Event
+            </h5>
+          </Link>
+        </div>
+      )}
 
       <div className="w-full flex items-center p-4">
         <Link

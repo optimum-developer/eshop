@@ -40,6 +40,7 @@ const shopSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+
   withdrawMethod: {
     type: Object,
   },
@@ -66,6 +67,10 @@ const shopSchema = new mongoose.Schema({
       },
     },
   ],
+  approval: {
+    type: String,
+    default: "pending",
+  },
   createdAt: {
     type: Date,
     default: Date.now(),

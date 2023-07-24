@@ -9,15 +9,14 @@ import { getAllProductsShop } from "../../redux/actions/product";
 import { Button } from "@material-ui/core";
 import { DataGrid } from "@material-ui/data-grid";
 import { getAllSellers } from "../../redux/actions/sellers";
-import { loadSeller} from "../../redux/actions/user";
-
+import { loadSeller } from "../../redux/actions/user";
 
 const DashboardHero = () => {
   const dispatch = useDispatch();
   const { orders } = useSelector((state) => state.order);
   const { seller } = useSelector((state) => state.seller);
   const { products } = useSelector((state) => state.products);
-
+  console.log("seller shop dashboard seller.approval =");
   useEffect(() => {
     dispatch(getAllOrdersOfShop(seller._id));
     dispatch(getAllProductsShop(seller._id));
@@ -91,6 +90,15 @@ const DashboardHero = () => {
     });
   return (
     <div className="w-full p-8">
+      {(seller.approval === "pending" || seller.approval === "rejected") && (
+        <div className="border-2 border-rose-400 px-4 py-4 text-center mb-4">
+          <h3>
+            {seller.approval === "pending"
+              ? "Your seller account is currently not approved by the admin"
+              : "Your seller account has been rejected by the admin"}
+          </h3>
+        </div>
+      )}
       <h3 className="text-[22px] font-Poppins pb-2">Overview</h3>
       <div className="w-full block 800px:flex items-center justify-between">
         <div className="w-full mb-4 800px:w-[30%] min-h-[20vh] bg-white shadow rounded px-2 py-5">

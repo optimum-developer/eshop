@@ -2,31 +2,45 @@ import { Button } from "@material-ui/core";
 import { DataGrid } from "@material-ui/data-grid";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import {  AiOutlineEye } from "react-icons/ai";
+import { AiOutlineEye } from "react-icons/ai";
 import { Link } from "react-router-dom";
 import { server } from "../../server";
 
 const AllEvents = () => {
   const [events, setEvents] = useState([]);
+  const [selected, setSelected] = useState({});
   useEffect(() => {
-   axios.get(`${server}/event/admin-all-events`, {withCredentials: true}).then((res) =>{
-    setEvents(res.data.events);
-   })
+    axios
+      .get(`${server}/event/admin-all-events`, { withCredentials: true })
+      .then((res) => {
+        setEvents(res.data.events);
+      });
   }, []);
 
+  const handleApproval = (e, id) => {
+    const { value } = e.target;
+    setSelected((prev) => ({ ...prev, [id]: value }));
+    axios
+      .put(
+        `${server}/event/update-event-approval`,
+        { id, value },
+        { withCredentials: true }
+      )
+      .then((res) => {});
+  };
   const columns = [
     { field: "id", headerName: "Product Id", minWidth: 150, flex: 0.7 },
     {
       field: "name",
       headerName: "Name",
       minWidth: 180,
-      flex: 1.4,
+      flex: 0.8,
     },
     {
       field: "price",
       headerName: "Price",
       minWidth: 100,
-      flex: 0.6,
+      flex: 0.4,
     },
     {
       field: "Stock",
@@ -41,11 +55,33 @@ const AllEvents = () => {
       headerName: "Sold out",
       type: "number",
       minWidth: 130,
-      flex: 0.6,
+      flex: 0.5,
     },
     {
+      field: "approval",
+      headerName: "Approval",
+      type: "number",
+      minWidth: 130,
+      flex: 0.6,
+      renderCell: (params) => {
+        const { id } = params;
+        const { name, customData } = params.row;
+        return (
+          <select
+            value={selected[id] || customData.approval}
+            onChange={(e) => handleApproval(e, id)}
+          >
+            <option value="pending">Pending</option>
+            <option value="approved">Approved</option>
+            <option value="rejected">Rejected</option>
+          </select>
+        );
+      },
+    },
+
+    {
       field: "Preview",
-      flex: 0.8,
+      flex: 0.4,
       minWidth: 100,
       headerName: "",
       type: "number",
@@ -74,6 +110,7 @@ const AllEvents = () => {
         price: "US$ " + item.discountPrice,
         Stock: item.stock,
         sold: item.sold_out,
+        customData: item,
       });
     });
 

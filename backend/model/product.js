@@ -61,6 +61,10 @@ const productSchema = new mongoose.Schema({
       },
     },
   ],
+  asin: {
+    type: Number,
+    required: true,
+  },
   ratings: {
     type: Number,
   },

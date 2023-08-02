@@ -76,31 +76,46 @@ const Checkout = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const name = couponCode;
+    console.log(name);
 
     await axios.get(`${server}/coupon/get-coupon-value/${name}`).then((res) => {
+      console.log("inside");
       const shopId = res.data.couponCode?.shopId;
-      const couponCodeValue = res.data.couponCode?.value;
-      if (res.data.couponCode !== null) {
-        const isCouponValid =
-          cart && cart.filter((item) => item.shopId === shopId);
 
-        if (isCouponValid.length === 0) {
-          toast.error("Coupon code is not valid for this shop");
-          setCouponCode("");
-        } else {
-          const eligiblePrice = isCouponValid.reduce(
-            (acc, item) => acc + item.qty * item.discountPrice,
-            0
-          );
-          const discountPrice = (eligiblePrice * couponCodeValue) / 100;
-          setDiscountPrice(discountPrice);
-          setCouponCodeData(res.data.couponCode);
+      const couponCodeValue = res.data.couponCode?.value;
+
+      if (shopId === "admin") {
+        const eligiblePrice =
+          cart &&
+          cart.reduce((acc, item) => acc + item.qty * item.discountPrice, 0);
+
+        const discountPrice = (eligiblePrice * couponCodeValue) / 100;
+        setDiscountPrice(discountPrice);
+        setCouponCodeData(res.data.couponCode);
+        setCouponCode("");
+      } else {
+        if (res.data.couponCode !== null) {
+          const isCouponValid =
+            cart && cart.filter((item) => item.shopId === shopId);
+
+          if (isCouponValid.length === 0) {
+            toast.error("Coupon code is not valid for this shop");
+            setCouponCode("");
+          } else {
+            const eligiblePrice = isCouponValid.reduce(
+              (acc, item) => acc + item.qty * item.discountPrice,
+              0
+            );
+            const discountPrice = (eligiblePrice * couponCodeValue) / 100;
+            setDiscountPrice(discountPrice);
+            setCouponCodeData(res.data.couponCode);
+            setCouponCode("");
+          }
+        }
+        if (res.data.couponCode === null) {
+          toast.error("Coupon code doesn't exists!");
           setCouponCode("");
         }
-      }
-      if (res.data.couponCode === null) {
-        toast.error("Coupon code doesn't exists!");
-        setCouponCode("");
       }
     });
   };
@@ -110,8 +125,6 @@ const Checkout = () => {
   const totalPrice = couponCodeData
     ? (subTotalPrice + shipping - discountPercentenge).toFixed(2)
     : (subTotalPrice + shipping).toFixed(2);
-
-  console.log(discountPercentenge);
 
   return (
     <div className="w-full flex flex-col items-center py-8">

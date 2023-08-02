@@ -145,7 +145,6 @@ router.get(
   "/getAdmin",
   isAdminAuthenticated,
   catchAsyncErrors(async (req, res, next) => {
-    console.log("Request user", req.user.id);
     try {
       const user = await Admin.findById(req.user.id);
 
@@ -185,34 +184,35 @@ router.get(
 // update user info
 router.put(
   "/update-user-info",
-  isAuthenticated,
+  isAdminAuthenticated,
   catchAsyncErrors(async (req, res, next) => {
     try {
-      const { email, password, phoneNumber, name } = req.body;
+      const { name, phoneNumber, description, address } = req.body;
 
-      const user = await User.findOne({ email }).select("+password");
+      const admin = await Admin.findOne({ name }).select("+password");
 
-      if (!user) {
+      if (!admin) {
         return next(new ErrorHandler("User not found", 400));
       }
 
-      const isPasswordValid = await user.comparePassword(password);
+      // const isPasswordValid = await user.comparePassword(password);
 
-      if (!isPasswordValid) {
-        return next(
-          new ErrorHandler("Please provide the correct information", 400)
-        );
-      }
+      // if (!isPasswordValid) {
+      //   return next(
+      //     new ErrorHandler("Please provide the correct information", 400)
+      //   );
+      // }
 
-      user.name = name;
-      user.email = email;
-      user.phoneNumber = phoneNumber;
+      admin.name = name;
+      admin.description = description;
+      admin.phoneNumber = phoneNumber;
+      admin.address = address;
 
       await user.save();
 
       res.status(201).json({
         success: true,
-        user,
+        admin,
       });
     } catch (error) {
       return next(new ErrorHandler(error.message, 500));

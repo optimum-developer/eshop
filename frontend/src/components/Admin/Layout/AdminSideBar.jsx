@@ -1,5 +1,7 @@
 import React from "react";
 import { FiShoppingBag } from "react-icons/fi";
+import { MdOutlineDiscount } from "react-icons/md";
+
 import { GrWorkshop } from "react-icons/gr";
 import { RxDashboard } from "react-icons/rx";
 import { CiMoneyBill, CiSettings } from "react-icons/ci";
@@ -125,7 +127,7 @@ const AdminSideBar = ({ active }) => {
         </Link>
       </div>
 
-      <div className="w-full flex items-center p-4">
+      {/* <div className="w-full flex items-center p-4">
         <Link to="/admin-withdraw-request" className="w-full flex items-center">
           <CiMoneyBill
             size={30}
@@ -137,6 +139,24 @@ const AdminSideBar = ({ active }) => {
             }`}
           >
             Withdraw Request
+          </h5>
+        </Link>
+      </div> */}
+      <div className="w-full flex items-center p-4">
+        <Link
+          to="/admin/promotional-coupan"
+          className="w-full flex items-center"
+        >
+          <MdOutlineDiscount
+            size={30}
+            color={`${active === 9 ? "crimson" : "#555"}`}
+          />
+          <h5
+            className={`hidden 800px:block pl-2 text-[18px] font-[400] ${
+              active === 9 ? "text-[crimson]" : "text-[#555]"
+            }`}
+          >
+            Promotional Code
           </h5>
         </Link>
       </div>

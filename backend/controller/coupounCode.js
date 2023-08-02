@@ -2,7 +2,7 @@ const express = require("express");
 const catchAsyncErrors = require("../middleware/catchAsyncErrors");
 const Shop = require("../model/shop");
 const ErrorHandler = require("../utils/ErrorHandler");
-const { isSeller } = require("../middleware/auth");
+const { isSeller, isAdminAuthenticated } = require("../middleware/auth");
 const CoupounCode = require("../model/coupounCode");
 const router = express.Router();
 
@@ -49,6 +49,22 @@ router.get(
   })
 );
 
+router.get(
+  "/get-admin-coupon/:name",
+  isAdminAuthenticated,
+  catchAsyncErrors(async (req, res, next) => {
+    try {
+      const couponCodes = await CoupounCode.find({ shopId: req.params.name });
+      res.status(201).json({
+        success: true,
+        couponCodes,
+      });
+    } catch (error) {
+      return next(new ErrorHandler(error, 400));
+    }
+  })
+);
+
 // delete coupoun code of a shop
 router.delete(
   "/delete-coupon/:id",
@@ -70,6 +86,26 @@ router.delete(
   })
 );
 
+// delete coupoun code of a shop
+router.delete(
+  "/delete-admin-coupon/:id",
+  isAdminAuthenticated,
+  catchAsyncErrors(async (req, res, next) => {
+    try {
+      const couponCode = await CoupounCode.findByIdAndDelete(req.params.id);
+
+      if (!couponCode) {
+        return next(new ErrorHandler("Coupon code dosen't exists!", 400));
+      }
+      res.status(201).json({
+        success: true,
+        message: "Coupon code deleted successfully!",
+      });
+    } catch (error) {
+      return next(new ErrorHandler(error, 400));
+    }
+  })
+);
 // get coupon code value by its name
 router.get(
   "/get-coupon-value/:name",

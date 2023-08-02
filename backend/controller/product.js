@@ -22,22 +22,40 @@ router.post(
   catchAsyncErrors(async (req, res, next) => {
     try {
       const shopId = req.body.shopId;
+      const { asin, images } = req.body;
+      console.log(typeof asin);
+      console.log({ asin });
+
       const shop = await Shop.findById(shopId);
+      // let asinNo;
+      // const asinNo = await Product.findOne({ asin: asin });
+
+      if (asin == "null") {
+        const products = await Product.find().sort({ asin: -1 });
+        req.body.asin = products[0].asin + 1;
+      }
+
       if (!shop) {
         return next(new ErrorHandler("Shop Id is invalid!", 400));
       } else {
         const files = req.files;
         const imageUrls = files.map((file) => `${file.filename}`);
+
         const productData = req.body;
-        productData.images = imageUrls;
+        productData.images = asin !== "null" ? images : imageUrls;
         productData.shop = shop;
+        console.log(productData.images);
+
+        // return
         const product = await Product.create(productData);
+
         res.status(201).json({
           success: true,
           product,
         });
       }
     } catch (error) {
+      console.log("catch error");
       return next(new ErrorHandler(error, 400));
     }
   })

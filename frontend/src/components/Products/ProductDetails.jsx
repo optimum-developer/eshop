@@ -38,7 +38,7 @@ const ProductDetails = ({ data }) => {
   const userId = user?._id;
   const cartProductList = items.map((el) => el.product);
   const wishlistProduct = wishlist.map((el) => el.product);
-
+  console.log(data?._id);
   useEffect(() => {
     dispatch(getAllProductsShop(data && data?.shop._id));
     dispatch(getAllOrdersOfAllUsers());
@@ -317,9 +317,15 @@ const ProductDetails = ({ data }) => {
                     </span>
                   </div>
                 </div>
+                <Link to={`/sellers/${data._id}`}>
+                  <p className="text-blue-500 cursor-pointer underline">
+                    See other sellers
+                  </p>
+                </Link>
               </div>
             </div>
           </div>
+
           <ProductDetailsInfo
             data={data}
             products={products}

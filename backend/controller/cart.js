@@ -13,6 +13,8 @@ router.post(
     const { userId } = req.body;
     console.log({ _id });
     console.log({ userId });
+    console.log("cart controller",req.body);
+
 
     try {
       const product = await Cart.findOne({ userId, "product._id": _id });

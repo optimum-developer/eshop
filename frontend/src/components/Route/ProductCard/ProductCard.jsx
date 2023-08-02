@@ -177,7 +177,6 @@ const ProductCard = ({ data, isEvent }) => {
               ? `/product/${data._id}?isEvent=true`
               : `/product/${data._id}`
           }`}
-          target="_blank"
         >
           <h4 className="pb-3 font-[500]">
             {data.name.length > 40 ? data.name.slice(0, 40) + "..." : data.name}

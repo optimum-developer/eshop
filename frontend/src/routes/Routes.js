@@ -22,6 +22,8 @@ import AdminLogin from "../components/Admin/Layout/AdminLogin";
 import AdminActivationPage from "../pages/AdminActivationPage";
 import AdminSettingsPage from "../pages/Admin/AdminSettingsPage";
 import AdminHomePage from "../pages/Admin/AdminHomePage";
+import SellerProductList from "../pages/SellerProductList";
+import AdminCoupanPage from "../pages/Admin/AdminCoupanPage";
 
 export {
   LoginPage,
@@ -47,5 +49,7 @@ export {
   AdminLogin,
   AdminActivationPage,
   AdminSettingsPage,
-  AdminHomePage
+  AdminHomePage,
+  SellerProductList,
+  AdminCoupanPage,
 };

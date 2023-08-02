@@ -26,6 +26,8 @@ import {
   AdminActivationPage,
   AdminSettingsPage,
   AdminHomePage,
+  SellerProductList,
+  AdminCoupanPage,
 } from "./routes/Routes.js";
 import {
   ShopDashboardPage,
@@ -119,6 +121,7 @@ const App = () => {
         <Route path="/best-selling" element={<BestSellingPage />} />
         <Route path="/events" element={<EventsPage />} />
         <Route path="/faq" element={<FAQPage />} />
+        <Route path="/sellers/:id" element={<SellerProductList />} />
         <Route
           path="/checkout"
           element={
@@ -292,9 +295,10 @@ const App = () => {
           path="/admin-withdraw-request"
           element={<AdminDashboardWithdraw />}
         />
+        <Route path="/admin/promotional-coupan" element={<AdminCoupanPage />} />
       </Routes>
       <ToastContainer
-        position="bottom-center"
+        position="top-right"
         autoClose={5000}
         hideProgressBar={false}
         newestOnTop={false}

@@ -1,25 +1,18 @@
 import React, { useState } from "react";
 import {
   AiFillHeart,
-  AiFillStar,
   AiOutlineEye,
   AiOutlineHeart,
   AiOutlineShoppingCart,
-  AiOutlineStar,
 } from "react-icons/ai";
 import { Link, useNavigate } from "react-router-dom";
 import { backend_url, server } from "../../../server";
 import styles from "../../../styles/styles";
 import { useDispatch, useSelector } from "react-redux";
 import ProductDetailsCard from "../ProductDetailsCard/ProductDetailsCard";
-import {
-  addToWishlist,
-  removeFromWishlist,
-} from "../../../redux/actions/wishlist";
 
 import { getProductListFromOrderList } from "../../../redux/actions/order";
 import { useEffect } from "react";
-import { addTocart } from "../../../redux/actions/cart";
 import { toast } from "react-toastify";
 import Ratings from "../../Products/Ratings";
 import axios from "axios";
@@ -33,12 +26,10 @@ const ProductCard = ({ data, isEvent }) => {
   // const { wishlist } = useSelector((state) => state.wishlist);
   const { isAuthenticated, user } = useSelector((state) => state.user);
   const { productList } = useSelector((state) => state.order);
-  const { cart } = useSelector((state) => state.cart);
 
   const [open, setOpen] = useState(false);
   const dispatch = useDispatch();
   const userId = user?._id;
-  const [watch, setWatch] = useState();
   const { items } = useSelector((state) => state.addcart);
   const { wishlist } = useSelector((state) => state.addwishlist);
   const cartProductList = items.map((el) => el.product);
@@ -52,15 +43,12 @@ const ProductCard = ({ data, isEvent }) => {
   const removeFromWishlistHandler = async (data) => {
     setClick(!click);
     try {
-      const wishlist = await axios.delete(
-        `${server}/wishlist/delete-wishlist-item`,
-        {
-          data: {
-            userId: userId,
-            productId: data._id,
-          },
-        }
-      );
+      await axios.delete(`${server}/wishlist/delete-wishlist-item`, {
+        data: {
+          userId: userId,
+          productId: data._id,
+        },
+      });
 
       const wishlistData = await axios.post(
         `${server}/wishlist/get-wishlist-item`,
@@ -83,7 +71,7 @@ const ProductCard = ({ data, isEvent }) => {
     }
     setClick(!click);
     try {
-      const wishlist = await axios.post(`${server}/wishlist/add-to-wishlist`, {
+      await axios.post(`${server}/wishlist/add-to-wishlist`, {
         userId: user._id,
         product: data,
       });
@@ -101,9 +89,6 @@ const ProductCard = ({ data, isEvent }) => {
     }
   };
 
-  const cartData = useGetCart();
-  const wishlistData = useGetWishlist();
-
   const addToCartHandler = async (id) => {
     if (!isAuthenticated) {
       navigate("/login");
@@ -117,7 +102,7 @@ const ProductCard = ({ data, isEvent }) => {
         toast.error("Product stock limited!");
       } else {
         try {
-          const cart = await axios.post(`${server}/cart/add-to-cart`, {
+          await axios.post(`${server}/cart/add-to-cart`, {
             userId: user._id,
             product: { ...data, qty: 1 },
           });

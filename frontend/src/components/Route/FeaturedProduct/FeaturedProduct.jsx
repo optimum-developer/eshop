@@ -1,11 +1,10 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { useSelector } from "react-redux";
 import styles from "../../../styles/styles";
 import ProductCard from "../ProductCard/ProductCard";
 
 const FeaturedProduct = () => {
   const { allProducts } = useSelector((state) => state.products);
-  const { orders} = useSelector((state) => state.order);
 
   return (
     <div>

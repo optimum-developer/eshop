@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
 import styles from "../../styles/styles";
-import { categoriesData, productData } from "../../static/data";
+import { categoriesData } from "../../static/data";
 import {
   AiOutlineHeart,
   AiOutlineSearch,
@@ -34,19 +34,11 @@ const Header = ({ activeHeading }) => {
   const [openCart, setOpenCart] = useState(false);
   const [openWishlist, setOpenWishlist] = useState(false);
   const [open, setOpen] = useState(false);
-  const [clickOutside, setClickOutside] = useState(false);
   const searchRef = useRef(null);
 
   const handleSearchChange = (e) => {
     const term = e.target.value;
-    console.log({ searchData });
-    console.log({ term });
-    // console.log("length", term.length);
 
-    // if (term.length === 0) {
-    //   setSearchData(null);
-    //   return;
-    // }
     setSearchTerm(term);
 
     const filteredProducts =
@@ -70,16 +62,6 @@ const Header = ({ activeHeading }) => {
     // document.addEventListener("click", handleClickOutside, true);
   }, []);
 
-  const handleClickOutside = (e) => {
-    console.log(e.target);
-    console.log(searchRef.current);
-
-    if (!searchRef.current.contains(e.target)) {
-      console.log("click outside", searchRef.current);
-    } else {
-      console.log("click inside input field");
-    }
-  };
   return (
     <>
       <div className={`${styles.section}`}>

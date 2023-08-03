@@ -1,15 +1,11 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { RxCross1 } from "react-icons/rx";
-import { IoBagHandleOutline } from "react-icons/io5";
 import { BsCartPlus } from "react-icons/bs";
 import styles from "../../styles/styles";
-import { Link } from "react-router-dom";
 import { AiOutlineHeart } from "react-icons/ai";
 import { useDispatch, useSelector } from "react-redux";
-import { removeFromWishlist } from "../../redux/actions/wishlist";
 import { backend_url } from "../../server";
-import { addTocart } from "../../redux/actions/cart";
 import { toast } from "react-toastify";
 import axios from "axios";
 import { server } from "./../../server";
@@ -27,13 +23,12 @@ const Wishlist = ({ setOpenWishlist }) => {
   const wishlistProduct = wishlist.map((el) => el.product);
 
   const dispatch = useDispatch();
-  const wishlistData = useGetWishlist();
   const userId = user._id;
   const navigate = useNavigate();
 
   const removeFromWishlistHandler = async (data) => {
     try {
-      const wishlistData = await axios.delete(
+     await axios.delete(
         `${server}/wishlist/delete-wishlist-item`,
         {
           data: {
@@ -69,7 +64,7 @@ const Wishlist = ({ setOpenWishlist }) => {
         toast.error("Product stock limited! wishlist add to cart");
       } else {
         try {
-          const cart = await axios.post(`${server}/cart/add-to-cart`, {
+          await axios.post(`${server}/cart/add-to-cart`, {
             userId: user._id,
             product: { ...data, qty: 1 },
           });

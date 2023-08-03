@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React from "react";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -37,7 +37,7 @@ export default function HeroCarousel() {
       <Slider {...settings}>
         {slides.map((slide) => (
           <div className="border bottom-1" key={slide.url}>
-            <img src={slide.url} />
+            <img src={slide.url} alt="setting-icon" />
           </div>
         ))}
       </Slider>

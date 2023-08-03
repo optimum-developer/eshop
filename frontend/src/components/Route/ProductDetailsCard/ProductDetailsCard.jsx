@@ -11,25 +11,18 @@ import { backend_url } from "../../../server";
 import styles from "../../../styles/styles";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
-import { addTocart } from "../../../redux/actions/cart";
-import {
-  addToWishlist,
-  removeFromWishlist,
-} from "../../../redux/actions/wishlist";
+
 import axios from "axios";
 import { server } from "../../../server";
 import { setCartOnLoad } from "../../../redux/reducers/addtocart";
 import { setWishlistOnload } from "../../../redux/reducers/addtowishlist";
 
 const ProductDetailsCard = ({ setOpen, data }) => {
-  const { cart } = useSelector((state) => state.cart);
   const { wishlist } = useSelector((state) => state.addwishlist);
   const { isAuthenticated, user } = useSelector((state) => state.user);
   const { items } = useSelector((state) => state.addcart);
   const cartProductList = items.map((el) => el.product);
-const wishlistProduct=wishlist.map(el=>el.product)
-  console.log({wishlist});
-  console.log({data});
+  const wishlistProduct = wishlist.map((el) => el.product);
 
   const userId = user?._id;
   const dispatch = useDispatch();
@@ -61,7 +54,7 @@ const wishlistProduct=wishlist.map(el=>el.product)
         toast.error("Product stock limited!");
       } else {
         try {
-          const cart = await axios.post(`${server}/cart/add-to-cart`, {
+          await axios.post(`${server}/cart/add-to-cart`, {
             userId: user._id,
             product: { ...data, qty: 1 },
           });
@@ -83,15 +76,12 @@ const wishlistProduct=wishlist.map(el=>el.product)
   const removeFromWishlistHandler = async (data) => {
     setClick(!click);
     try {
-      const wishlistData = await axios.delete(
-        `${server}/wishlist/delete-wishlist-item`,
-        {
-          data: {
-            userId: user._id,
-            productId: data._id,
-          },
-        }
-      );
+      await axios.delete(`${server}/wishlist/delete-wishlist-item`, {
+        data: {
+          userId: user._id,
+          productId: data._id,
+        },
+      });
       toast.success("item deleted from wishlist");
     } catch (error) {
       console.log(error);
@@ -112,7 +102,7 @@ const wishlistProduct=wishlist.map(el=>el.product)
     if (!isAuthenticated) navigate("/login");
     setClick(!click);
     try {
-      const wishlist = await axios.post(`${server}/wishlist/add-to-wishlist`, {
+      await axios.post(`${server}/wishlist/add-to-wishlist`, {
         userId: user._id,
         product: data,
       });

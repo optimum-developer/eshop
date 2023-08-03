@@ -595,7 +595,6 @@ const Address = () => {
 
   const handleUpdate = async (e, item) => {
     e.preventDefault();
-    console.log("handle update");
 
     const addressId = updateValue;
     console.log({ addressId });
@@ -664,20 +663,20 @@ const Address = () => {
               <form
                 aria-required
                 onSubmit={buttonType === "Submit" ? handleSubmit : handleUpdate}
-                className="w-full"
+                className="w-full p-6"
               >
-                {buttonType === "Submit" ? "handleSubmit" : "handleUpdate"}
+                {/* {buttonType === "Submit" ? "handleSubmit" : "handleUpdate"} */}
                 <div className="w-full block p-4">
                   <div className="w-full pb-2">
-                    <label className="block pb-2">Country</label>
+                    <label className="block pb-2 px-2">Country</label>
                     <select
                       name=""
                       id=""
                       value={country}
                       onChange={(e) => setCountry(e.target.value)}
-                      className="w-[95%] border h-[40px] rounded-[5px]"
+                      className="w-[95%] border h-[40px] rounded-[5px] p-2"
                     >
-                      <option value="" className="block border pb-2">
+                      <option value="" className="block border p-2">
                         choose your country
                       </option>
                       {Country &&
@@ -694,13 +693,13 @@ const Address = () => {
                   </div>
 
                   <div className="w-full pb-2">
-                    <label className="block pb-2">Choose your City</label>
+                    <label className="block pb-2 px-2">Choose your City</label>
                     <select
                       name=""
                       id=""
                       value={city}
                       onChange={(e) => setCity(e.target.value)}
-                      className="w-[95%] border h-[40px] rounded-[5px]"
+                      className="w-[95%] border h-[40px] rounded-[5px] p-2"
                     >
                       <option value="" className="block border pb-2">
                         choose your city
@@ -719,20 +718,20 @@ const Address = () => {
                   </div>
 
                   <div className="w-full pb-2">
-                    <label className="block pb-2">Address 1</label>
+                    <label className="block pb-2 px-2">Address 1</label>
                     <input
                       type="address"
-                      className={`${styles.input}`}
+                      className={`${styles.input} p-2`}
                       required
                       value={address1}
                       onChange={(e) => setAddress1(e.target.value)}
                     />
                   </div>
                   <div className="w-full pb-2">
-                    <label className="block pb-2">Address 2</label>
+                    <label className="block pb-2 px-2">Address 2</label>
                     <input
                       type="address"
-                      className={`${styles.input}`}
+                      className={`${styles.input} p-2`}
                       required
                       value={address2}
                       onChange={(e) => setAddress2(e.target.value)}
@@ -740,10 +739,10 @@ const Address = () => {
                   </div>
 
                   <div className="w-full pb-2">
-                    <label className="block pb-2">Zip Code</label>
+                    <label className="block pb-2 px-2">Zip Code</label>
                     <input
                       type="number"
-                      className={`${styles.input}`}
+                      className={`${styles.input} p-2`}
                       required
                       value={zipCode}
                       onChange={(e) => setZipCode(e.target.value)}
@@ -751,13 +750,13 @@ const Address = () => {
                   </div>
 
                   <div className="w-full pb-2">
-                    <label className="block pb-2">Address Type</label>
+                    <label className="block pb-2 px-2">Address Type</label>
                     <select
                       name=""
                       id=""
                       value={addressType}
                       onChange={(e) => setAddressType(e.target.value)}
-                      className="w-[95%] border h-[40px] rounded-[5px]"
+                      className="w-[95%] border h-[40px] rounded-[5px] p-2"
                     >
                       <option value="" className="block border pb-2">
                         Choose your Address Type

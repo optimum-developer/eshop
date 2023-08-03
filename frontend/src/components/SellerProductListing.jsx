@@ -3,14 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { setCartOnLoad } from "../redux/reducers/addtocart";
 
-import styles from "../styles/styles";
-import {
-  AiFillHeart,
-  AiOutlineHeart,
-  AiOutlineMessage,
-  AiOutlineShoppingCart,
-  AiFillStar,
-} from "react-icons/ai";
+import { AiOutlineShoppingCart, AiFillStar } from "react-icons/ai";
 
 import Ratings from "./Products/Ratings";
 import { backend_url } from "../server";
@@ -18,26 +11,28 @@ import { server } from "../server";
 import axios from "axios";
 
 const SellerProductListing = () => {
-  const { cart } = useSelector((state) => state.cart);
   const { user, isAuthenticated } = useSelector((state) => state.user);
-  const { allProducts, isLoading } = useSelector((state) => state.products);
+  const { allProducts } = useSelector((state) => state.products);
   const userId = user?._id;
 
   const { items } = useSelector((state) => state.addcart);
   const cartProductList = items.map((el) => el.product);
 
-  const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const { id } = useParams();
 
   const product = allProducts.filter((prod) => prod._id === id);
+  const navigate = useNavigate();
 
   const sellerList = allProducts.filter(
     (prod) => prod.asin === product[0].asin
   );
 
   const addToCartHandler = async (id, data) => {
+    if (!isAuthenticated) {
+      navigate("/login");
+    }
     const isItemExists =
       cartProductList && cartProductList.find((i) => i._id === id);
     if (isItemExists) {
@@ -50,7 +45,7 @@ const SellerProductListing = () => {
         console.log("else");
 
         try {
-          const cart = await axios.post(`${server}/cart/add-to-cart`, {
+          await axios.post(`${server}/cart/add-to-cart`, {
             userId: user._id,
             product: { ...data, qty: 1 },
           });
@@ -67,7 +62,6 @@ const SellerProductListing = () => {
 
     // return;
   };
-  console.log({ sellerList });
   return (
     <>
       {sellerList && (
@@ -97,6 +91,7 @@ const SellerProductListing = () => {
                 <img
                   src={`${backend_url}/${sellerList[0].images[0]}`}
                   className="w-[50px]"
+                  alt="seller-img"
                 />
               )}
             </div>

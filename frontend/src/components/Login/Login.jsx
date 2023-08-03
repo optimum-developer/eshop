@@ -12,8 +12,6 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [visible, setVisible] = useState(false);
-  const dispatch = useDispatch();
-  // const cart = useGetCart();
 
   const handleSubmit = async (e) => {
     e.preventDefault();

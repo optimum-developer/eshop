@@ -11,10 +11,6 @@ router.post(
   catchAsyncErrors(async (req, res, next) => {
     const { _id } = req.body.product;
     const { userId } = req.body;
-    console.log({ _id });
-    console.log({ userId });
-    console.log("cart controller",req.body);
-
 
     try {
       const product = await Cart.findOne({ userId, "product._id": _id });
@@ -79,6 +75,11 @@ router.put(
         { "product._id": productId },
         { $set: { "product.qty": qty } }
       );
+
+      res.status(200).json({
+        success: true,
+        message: "qty updated",
+      });
     } catch (error) {
       return next(new ErrorHandler(error, 400));
     }
@@ -104,6 +105,36 @@ router.delete(
         message: " Item removed from the cart!",
       });
     } catch (error) {
+      return next(new ErrorHandler(error, 400));
+    }
+  })
+);
+
+router.delete(
+  "/delete-cart-item-by-user",
+  catchAsyncErrors(async (req, res, next) => {
+    try {
+      const { userId } = req.body;
+      console.log({ userId });
+
+      const isItemExit = await Cart.findOne({ userId: userId });
+
+      // console.log({ isItemExit });
+      console.log("negate isItemExit", !isItemExit);
+
+      const cart = await Cart.deleteMany({ userId: userId });
+
+      if (!isItemExit) {
+        return next(new ErrorHandler("Item not in cart!", 500));
+      }
+      console.log({ cart });
+      res.status(201).json({
+        success: true,
+        message: " Item removed from the cart!",
+      });
+    } catch (error) {
+      console.log("error ");
+
       return next(new ErrorHandler(error, 400));
     }
   })

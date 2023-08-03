@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { server } from "../server";
 import { setCartOnLoad } from "../redux/reducers/addtocart";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 
 const useGetCart = () => {
   const [cart, setCart] = useState([]);

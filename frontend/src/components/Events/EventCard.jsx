@@ -4,14 +4,12 @@ import styles from "../../styles/styles";
 import CountDown from "./CountDown";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { addTocart } from "../../redux/actions/cart";
 import { toast } from "react-toastify";
 import { setCartOnLoad } from "../../redux/reducers/addtocart";
 import { server } from "../../server";
 import axios from "axios";
 
 const EventCard = ({ active, data }) => {
-  const { cart } = useSelector((state) => state.cart);
   const { isAuthenticated, user } = useSelector((state) => state.user);
   const { items } = useSelector((state) => state.addcart);
   const cartProductList = items.map((el) => el.product);
@@ -33,7 +31,7 @@ const EventCard = ({ active, data }) => {
         toast.error("Product stock limited!");
       } else {
         try {
-          const cart = await axios.post(`${server}/cart/add-to-cart`, {
+          await axios.post(`${server}/cart/add-to-cart`, {
             userId: user._id,
             product: { ...data, qty: 1 },
           });

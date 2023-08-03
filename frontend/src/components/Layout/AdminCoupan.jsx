@@ -4,12 +4,11 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { AiOutlineDelete } from "react-icons/ai";
 import { RxCross1 } from "react-icons/rx";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import styles from "../../styles/styles";
 import Loader from "../Layout/Loader";
 import { server } from "../../server";
 import { toast } from "react-toastify";
-import { Bs0Circle } from "react-icons/bs";
 
 const AdminCoupan = () => {
   const [open, setOpen] = useState(false);
@@ -20,12 +19,8 @@ const AdminCoupan = () => {
   const [maxAmount, setMaxAmount] = useState(null);
   const [selectedProducts, setSelectedProducts] = useState(null);
   const [value, setValue] = useState(null);
-  const { seller } = useSelector((state) => state.seller);
-  const { products } = useSelector((state) => state.products);
   const { user } = useSelector((state) => state.admin);
 
-  const dispatch = useDispatch();
-  const adminName = "admin";
   const loadCoupan = () => {
     console.log("inside useEffect");
     setIsLoading(true);

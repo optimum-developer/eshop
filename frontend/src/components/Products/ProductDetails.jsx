@@ -10,23 +10,17 @@ import { Link, useNavigate } from "react-router-dom";
 import { getAllProductsShop } from "../../redux/actions/product";
 import { backend_url, server } from "../../server";
 import styles from "../../styles/styles";
-import {
-  addToWishlist,
-  removeFromWishlist,
-} from "../../redux/actions/wishlist";
 
 import { setWishlistOnload } from "../../redux/reducers/addtowishlist";
 
 import { getAllOrdersOfAllUsers } from "../../redux/actions/order";
 import { setCartOnLoad } from "../../redux/reducers/addtocart";
-import { addTocart } from "../../redux/actions/cart";
 import { toast } from "react-toastify";
 import Ratings from "./Ratings";
 import axios from "axios";
 
 const ProductDetails = ({ data }) => {
   const { wishlist } = useSelector((state) => state.addwishlist);
-  const { cart } = useSelector((state) => state.cart);
   const { user, isAuthenticated } = useSelector((state) => state.user);
   const { products } = useSelector((state) => state.products);
   const { items } = useSelector((state) => state.addcart);
@@ -73,15 +67,12 @@ const ProductDetails = ({ data }) => {
   const removeFromWishlistHandler = async (data) => {
     setClick(!click);
     try {
-      const wishlist = await axios.delete(
-        `${server}/wishlist/delete-wishlist-item`,
-        {
-          data: {
-            userId: userId,
-            productId: data._id,
-          },
-        }
-      );
+      await axios.delete(`${server}/wishlist/delete-wishlist-item`, {
+        data: {
+          userId: userId,
+          productId: data._id,
+        },
+      });
 
       const wishlistData = await axios.post(
         `${server}/wishlist/get-wishlist-item`,
@@ -104,7 +95,7 @@ const ProductDetails = ({ data }) => {
     }
     setClick(!click);
     try {
-      const wishlist = await axios.post(`${server}/wishlist/add-to-wishlist`, {
+      await axios.post(`${server}/wishlist/add-to-wishlist`, {
         userId: user._id,
         product: data,
       });
@@ -123,6 +114,9 @@ const ProductDetails = ({ data }) => {
   };
 
   const addToCartHandler = async (id) => {
+    if (!isAuthenticated) {
+      navigate("/login");
+    }
     const isItemExists =
       cartProductList && cartProductList.find((i) => i._id === id);
     if (isItemExists) {
@@ -132,7 +126,7 @@ const ProductDetails = ({ data }) => {
         toast.error("Product stock limited!");
       } else {
         try {
-          const cart = await axios.post(`${server}/cart/add-to-cart`, {
+          await axios.post(`${server}/cart/add-to-cart`, {
             userId: user._id,
             product: { ...data, qty: 1 },
           });

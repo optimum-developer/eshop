@@ -17,7 +17,6 @@ const ProductsPage = () => {
   const [searchParams] = useSearchParams();
   const categoryData = searchParams.get("category");
   const { allProducts, isLoading } = useSelector((state) => state.products);
-  const { allOrders, productList } = useSelector((state) => state.order);
   const dispatch = useDispatch();
   const [selectedByBrand, setSelectedByBrand] = useState([]);
   const [data, setData] = useState([]);

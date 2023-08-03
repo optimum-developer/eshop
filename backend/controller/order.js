@@ -2,7 +2,12 @@ const express = require("express");
 const router = express.Router();
 const ErrorHandler = require("../utils/ErrorHandler");
 const catchAsyncErrors = require("../middleware/catchAsyncErrors");
-const { isAuthenticated,isAdminAuthenticated, isSeller, isAdmin } = require("../middleware/auth");
+const {
+  isAuthenticated,
+  isAdminAuthenticated,
+  isSeller,
+  isAdmin,
+} = require("../middleware/auth");
 const Order = require("../model/order");
 const Shop = require("../model/shop");
 const Product = require("../model/product");
@@ -14,7 +19,7 @@ router.post(
     try {
       const { cart, shippingAddress, user, totalPrice, paymentInfo } = req.body;
 
-      //   group cart items by shopId
+
       const shopItemsMap = new Map();
 
       for (const item of cart) {
@@ -149,10 +154,20 @@ router.put(
       async function updateOrder(id, qty) {
         const product = await Product.findById(id);
 
+        console.log("product stock before", product.stock);
+        console.log("product sold_out before", product.sold_out);
         product.stock -= qty;
         product.sold_out += qty;
 
         await product.save({ validateBeforeSave: false });
+
+        console.log("product stock after", product.stock);
+        console.log("product sold_out after", product.sold_out);
+
+        const productAfter = await Product.find({}).sort({
+          createdAt: -1,
+        });
+        console.log({ productAfter });
       }
 
       async function updateSellerInfo(amount) {
@@ -228,11 +243,23 @@ router.put(
 
       async function updateOrder(id, qty) {
         const product = await Product.findById(id);
+        console.log({ product });
 
         product.stock += qty;
         product.sold_out -= qty;
 
+        console.log("product stock before", product.stock);
+        console.log("product sold_out before", product.sold_out);
+
         await product.save({ validateBeforeSave: false });
+
+        console.log("product stock after", product.stock);
+        console.log("product sold_out after", product.sold_out);
+
+        const productAfter = await Product.find({}).sort({
+          createdAt: -1,
+        });
+        console.log({ productAfter });
       }
       async function updateSellerInfo(amount) {
         const seller = await Shop.findById(req.seller.id);

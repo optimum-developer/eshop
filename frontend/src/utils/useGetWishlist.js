@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useSelector, useDispatch } from "react-redux";
+import {useDispatch } from "react-redux";
 import { setWishlistOnload } from "../redux/reducers/addtowishlist";
 import { server } from "../server";
 import { useEffect,useState } from "react";

@@ -8,8 +8,6 @@ import { getAllOrdersOfShop } from "../../redux/actions/order";
 import { getAllProductsShop } from "../../redux/actions/product";
 import { Button } from "@material-ui/core";
 import { DataGrid } from "@material-ui/data-grid";
-import { getAllSellers } from "../../redux/actions/sellers";
-import { loadSeller } from "../../redux/actions/user";
 
 const DashboardHero = () => {
   const dispatch = useDispatch();

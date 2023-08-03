@@ -59,7 +59,7 @@ const OrderDetails = () => {
       .then((res) => {
         toast.success("Order updated!");
         dispatch(getAllOrdersOfShop(seller._id));
-        dispatch(loadSeller());
+        dispatch(loadSeller())
 
       })
       .catch((error) => {

@@ -11,7 +11,6 @@ import {
 } from "../../static/data";
 
 import { toast } from "react-toastify";
-import AllProducts from "./AllProducts";
 import { backend_url } from "../../server";
 
 const CreateProduct = () => {
@@ -40,7 +39,6 @@ const CreateProduct = () => {
   const [visible, setVisible] = useState(false);
   const [existingData, setExistingData] = useState({});
   const [searchList, setSearchList] = useState(allProducts);
-  console.log("create page typeof asin", typeof asin);
 
   useEffect(() => {
     if (error) {

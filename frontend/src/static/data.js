@@ -206,8 +206,7 @@ export const categoriesData = [
     id: 3,
     title: "Accesories",
     subTitle: "",
-    image_Url:
-      "/Category/Accesseries.jpg",
+    image_Url: "/Category/Accesseries.jpg",
   },
   {
     id: 4,
@@ -243,8 +242,7 @@ export const categoriesData = [
     id: 9,
     title: "Music and Gaming",
     subTitle: "",
-    image_Url:
-      "/Category/music.webp",
+    image_Url: "/Category/music.webp",
   },
   {
     id: 10,
@@ -641,8 +639,27 @@ export const footerSupportLinks = [
   },
 ];
 
-export const colorList = ["red", "black", "blue"];
+export const colorList = [
+  "red",
+  "black",
+  "blue",
+  "brown",
+  "grey",
+  "pink",
+  "coffee",
+  "Maroon",
+];
 
 export const sizeList = ["S", "M", "L", "XL", "2XL"];
 
-export const brandList = ["Addidas", "Red Tape", "Pumma"];
+export const brandList = [
+  "Addidas",
+  "Red Tape",
+  "Pumma",
+  "Allen Solly",
+  "Van Heusen",
+  "Spark",
+  "U.S. POLO",
+  "Arrow",
+  "Peter England",
+];

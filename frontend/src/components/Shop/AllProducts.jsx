@@ -53,6 +53,27 @@ const AllProducts = () => {
       flex: 0.6,
     },
     {
+      field: "status",
+      headerName: "Status",
+      type: "string",
+      minWidth: 130,
+      flex: 0.6,
+      renderCell: (params) => {
+        console.log({ params });
+        return (
+          <>
+            <p
+              className={`${
+                params.value === "approved" ? "bg-green-600" : "bg-red-400"
+              } h-8 w-20 flex justify-center items-center p-4 rounded-sm font-bold text-white`}
+            >
+              {params.value}
+            </p>
+          </>
+        );
+      },
+    },
+    {
       field: "Preview",
       flex: 0.8,
       minWidth: 100,
@@ -100,6 +121,7 @@ const AllProducts = () => {
         price: "US$ " + item.discountPrice,
         Stock: item.stock,
         sold: item?.sold_out,
+        status: item.approval,
       });
     });
 

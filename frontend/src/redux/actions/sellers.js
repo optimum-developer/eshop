@@ -10,7 +10,6 @@ export const getAllSellers = () => async (dispatch) => {
     const { data } = await axios.get(`${server}/shop/admin-all-sellers`, {
       withCredentials: true,
     });
-    console.log(data);
 
     dispatch({
       type: "getAllSellersSuccess",

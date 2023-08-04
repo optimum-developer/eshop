@@ -89,7 +89,13 @@ const DashboardHero = () => {
   return (
     <div className="w-full p-8">
       {(seller.approval === "pending" || seller.approval === "rejected") && (
-        <div className="border-2 border-rose-400 px-4 py-4 text-center mb-4">
+        <div
+          className={`${
+            seller.approval === "rejected"
+              ? "border-2 border-rose-300 px-4 py-8 text-center mb-4 bg-red-100 text-rose-500"
+              : " border-2 border-yellow-400 px-4 py-8 text-center mb-4 bg-yellow-200 text-yellow-600"
+          }`}
+        >
           <h3>
             {seller.approval === "pending"
               ? "Your seller account is currently not approved by the admin"

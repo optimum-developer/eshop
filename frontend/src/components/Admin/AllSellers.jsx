@@ -107,6 +107,13 @@ const AllSellers = () => {
             <select
               value={selected[id] || customData.approval}
               onChange={(e) => handleOnApproval(e, id, email, name)}
+              className={`${
+                (selected[id] || customData.approval) === "approved"
+                  ? "bg-green-600"
+                  :   (selected[id] || customData.approval) === "pending"?"bg-[#e9b430]":"bg-red-600"
+              } h-8 w-24 drop-shadow-md
+
+              flex justify-center items-center p-2 rounded-sm font-bold text-white`}
             >
               <option value="pending">Pending</option>
               <option value="approved">Approved</option>

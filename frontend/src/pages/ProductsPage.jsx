@@ -138,6 +138,7 @@ const ProductsPage = () => {
   ];
 
   useEffect(() => {
+    console.log("category assign");
     if (categoryData === null) {
       const d = allProducts;
       setData(d);
@@ -150,6 +151,7 @@ const ProductsPage = () => {
   }, [allProducts]);
 
   useEffect(() => {
+    console.log("dispatch function ");
     dispatch(getAllOrdersOfAllUsers());
     dispatch(getProductListFromOrderList());
   }, []);

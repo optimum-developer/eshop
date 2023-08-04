@@ -10,17 +10,18 @@ import { toast } from "react-toastify";
 import { server } from "../../server";
 import axios from "axios";
 import { setCartOnLoad } from "../../redux/reducers/addtocart";
+
 const Cart = ({ setOpenCart }) => {
+  console.log("Cart page");
   // const { cart } = useSelector((state) => state.cart);
   const cart = useSelector((state) => state.addcart.items);
   const { user } = useSelector((state) => state.user);
   const userId = user?._id;
 
   const productCart = cart.map((el) => el.product);
+  console.log({ productCart });
 
   const dispatch = useDispatch();
-  // return
-  // return
   const removeFromCartHandler = async (data) => {
     const cart = await axios.delete(`${server}/cart/delete-cart-item`, {
       data: {
@@ -133,6 +134,7 @@ const CartSingle = ({
       });
 
       // quantityChangeHandler(updateCartData);
+      console.log({ cartUpdate });
     }
   };
 
@@ -146,7 +148,7 @@ const CartSingle = ({
       qty: value - 1,
     });
   };
-
+  console.log({ value });
   return (
     <div className="border-b p-4">
       <div className="w-full flex items-center">
@@ -181,7 +183,7 @@ const CartSingle = ({
         </div>
         <RxCross1
           className="cursor-pointer"
-          style={{ width: "48px" }}
+          size={24}
           onClick={() => removeFromCartHandler(data)}
         />
       </div>

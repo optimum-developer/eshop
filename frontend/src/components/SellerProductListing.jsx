@@ -29,6 +29,30 @@ const SellerProductListing = () => {
     (prod) => prod.asin === product[0].asin
   );
 
+  const sellerRating = [];
+  sellerList.forEach((el) => {
+    const productByShop = allProducts.filter(
+      (product) => el?.shop?.name === product?.shop?.name
+    );
+    const review = productByShop.map((product) => product.reviews);
+    const rating = review.reduce(
+      (acc, product) => acc + (product.length > 0 ? product[0].rating : 0),
+      0
+    );
+    const averageRating = (rating / review.length).toFixed(2);
+    const obj = {
+      shopId: el.shop._id,
+      shopName: el.shop.name,
+      rating: averageRating,
+    };
+
+    sellerRating.push(obj);
+    console.log({ averageRating });
+  });
+
+  console.log({ sellerRating });
+  console.log({ sellerList });
+
   const addToCartHandler = async (id, data) => {
     if (!isAuthenticated) {
       navigate("/login");
@@ -59,7 +83,6 @@ const SellerProductListing = () => {
         }
       }
     }
-
     // return;
   };
   return (
@@ -117,7 +140,11 @@ const SellerProductListing = () => {
                   {product.shop.name}
                 </p>
                 <div className="mb-2">
-                  <Ratings rating={product.rating} />
+                  <Ratings
+                    rating={sellerRating
+                      .filter((review) => review.shopId === product.shop._id)
+                      .map((el) => el.rating)}
+                  />
                 </div>
                 <p className="font-semi-bold text-start mb-2 text-grey-300">
                   {product.shop.address}

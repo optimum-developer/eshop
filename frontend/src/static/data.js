@@ -647,7 +647,8 @@ export const colorList = [
   "grey",
   "pink",
   "coffee",
-  "Maroon",
+  "maroon",
+  "yellow"
 ];
 
 export const sizeList = ["S", "M", "L", "XL", "2XL"];

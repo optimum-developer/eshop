@@ -87,6 +87,7 @@ const AllProducts = () => {
 
         return (
           <>
+            {/* <p>{selected[id] || customData.approval}</p> */}
             <select
               value={selected[id] || customData.approval}
               onChange={(e) => handleOnApproval(e, id, email, name)}
@@ -95,10 +96,9 @@ const AllProducts = () => {
                   ? "bg-green-600"
                   : (selected[id] || customData.approval) === "pending"
                   ? "bg-[#e9b430]"
-                  : "bg-red-400"
+                  : "bg-red-600"
               } h-8 w-24 drop-shadow-md
-
-              flex justify-center  items-center p-2 rounded-sm font-bold text-white`}
+              flex justify-center items-center p-2 rounded-sm font-bold text-white`}
             >
               <option value="pending py-2">Pending</option>
               <option value="approved py-2">Approved</option>

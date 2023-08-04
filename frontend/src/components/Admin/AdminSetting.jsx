@@ -33,7 +33,7 @@ const AdminSettings = () => {
     formData.append("image", e.target.files[0]);
 
     await axios
-      .put(`${server}/shop/update-shop-avatar`, formData, {
+      .put(`${server}/admin/update-avatar`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },

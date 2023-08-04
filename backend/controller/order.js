@@ -19,7 +19,6 @@ router.post(
     try {
       const { cart, shippingAddress, user, totalPrice, paymentInfo } = req.body;
 
-
       const shopItemsMap = new Map();
 
       for (const item of cart) {
@@ -135,12 +134,6 @@ router.put(
         order.deliveredAt = Date.now();
         order.paymentInfo.status = "Succeeded";
         const serviceCharge = order.totalPrice * 0.1;
-        console.log("/update-order-status serviceCharge", serviceCharge);
-        console.log(
-          "/update-order-status order.totalPrice - serviceCharge",
-          order.totalPrice - serviceCharge
-        );
-
         await updateSellerInfo(order.totalPrice - serviceCharge);
       }
 
@@ -154,20 +147,14 @@ router.put(
       async function updateOrder(id, qty) {
         const product = await Product.findById(id);
 
-        console.log("product stock before", product.stock);
-        console.log("product sold_out before", product.sold_out);
         product.stock -= qty;
         product.sold_out += qty;
 
         await product.save({ validateBeforeSave: false });
 
-        console.log("product stock after", product.stock);
-        console.log("product sold_out after", product.sold_out);
-
         const productAfter = await Product.find({}).sort({
           createdAt: -1,
         });
-        console.log({ productAfter });
       }
 
       async function updateSellerInfo(amount) {
@@ -232,29 +219,19 @@ router.put(
         order.cart.forEach(async (o) => {
           await updateOrder(o._id, o.qty);
         });
-        console.log("order.totalPrice", order.totalPrice);
-        console.log(order.status);
 
         const serviceCharge = order.totalPrice * 0.1;
-        console.log("serviceCharge", serviceCharge);
 
         await updateSellerInfo(order.totalPrice + serviceCharge);
       }
 
       async function updateOrder(id, qty) {
         const product = await Product.findById(id);
-        console.log({ product });
 
         product.stock += qty;
         product.sold_out -= qty;
 
-        console.log("product stock before", product.stock);
-        console.log("product sold_out before", product.sold_out);
-
         await product.save({ validateBeforeSave: false });
-
-        console.log("product stock after", product.stock);
-        console.log("product sold_out after", product.sold_out);
 
         const productAfter = await Product.find({}).sort({
           createdAt: -1,
@@ -263,10 +240,8 @@ router.put(
       }
       async function updateSellerInfo(amount) {
         const seller = await Shop.findById(req.seller.id);
-        console.log("seller before balanc :", seller.availableBalance);
         seller.availableBalance = seller.availableBalance - amount;
         await seller.save();
-        console.log("seller after balanc :", seller.availableBalance);
       }
     } catch (error) {
       return next(new ErrorHandler(error.message, 500));

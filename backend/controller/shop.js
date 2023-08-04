@@ -371,7 +371,6 @@ router.put(
   catchAsyncErrors(async (req, res, next) => {
     try {
       const { id, value, name, email } = req.body;
-      console.log({ email });
 
       const shop = await Shop.findByIdAndUpdate(
         { _id: id },

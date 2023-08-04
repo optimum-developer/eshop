@@ -17,7 +17,7 @@ const AdminDashboardMain = () => {
   );
   const { user } = useSelector((state) => state.admin);
   const { sellers } = useSelector((state) => state.seller);
-  console.log("AdminDashboardMain user", user);
+  // console.log("AdminDashboardMain user", user);
 
   useEffect(() => {
     dispatch(getAllOrdersOfAdmin());

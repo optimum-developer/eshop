@@ -16,10 +16,10 @@ const Cart = ({ setOpenCart }) => {
   // const { cart } = useSelector((state) => state.cart);
   const cart = useSelector((state) => state.addcart.items);
   const { user } = useSelector((state) => state.user);
+
   const userId = user?._id;
 
   const productCart = cart.map((el) => el.product);
-  console.log({ productCart });
 
   const dispatch = useDispatch();
   const removeFromCartHandler = async (data) => {
@@ -64,7 +64,9 @@ const Cart = ({ setOpenCart }) => {
                 <RxCross1
                   size={25}
                   className="cursor-pointer"
-                  onClick={() => setOpenCart(false)}
+                  onClick={() => {
+                    setOpenCart(false);
+                  }}
                 />
               </div>
               {/* Item length */}
@@ -117,7 +119,10 @@ const CartSingle = ({
   userId,
 }) => {
   const [value, setValue] = useState(data?.qty);
+  console.log("CartSingle data qty:", data?.qty);
   const totalPrice = data?.discountPrice * value;
+
+  const dispatch = useDispatch();
 
   const increment = async (data) => {
     // return
@@ -132,9 +137,9 @@ const CartSingle = ({
         productId: data._id,
         qty: value + 1,
       });
+      dispatch(setCartOnLoad(cartUpdate.data.cartByUserId));
 
       // quantityChangeHandler(updateCartData);
-      console.log({ cartUpdate });
     }
   };
 
@@ -147,8 +152,8 @@ const CartSingle = ({
       productId: data._id,
       qty: value - 1,
     });
+    dispatch(setCartOnLoad(cartUpdate.data.cartByUserId));
   };
-  console.log({ value });
   return (
     <div className="border-b p-4">
       <div className="w-full flex items-center">

@@ -58,9 +58,9 @@ import "react-toastify/dist/ReactToastify.css";
 import Store from "./redux/store";
 import { loadSeller, loadUser, loadAdmin } from "./redux/actions/user";
 import ProtectedRoute from "./routes/ProtectedRoute";
-import ProtectedAdminRoute from "./routes/ProtectedAdminRoute";
 import { ShopHomePage } from "./ShopRoutes.js";
 import SellerProtectedRoute from "./routes/SellerProtectedRoute";
+import ProtectedAdminRoute from "./routes/ProtectedAdminRoute";
 import { getAllProducts } from "./redux/actions/product";
 import { getAllEvents } from "./redux/actions/event";
 import axios from "axios";
@@ -164,7 +164,7 @@ const App = () => {
           }
         />
         <Route path="/shop/preview/:id" element={<ShopPreviewPage />} />
-        {/* shop Routes */}
+        {/* ---------------------Shop Routes --------------------------------*/}
         <Route path="/shop-create" element={<ShopCreatePage />} />
         <Route path="/shop-login" element={<ShopLoginPage />} />
         <Route
@@ -272,30 +272,85 @@ const App = () => {
             </SellerProtectedRoute>
           }
         />
-        {/* Admin Routes */}
+        {/*#----------------- ----Admin Routes---------------------------------- */}
         <Route path="/admin/sign-up" element={<AdminSignupPage />} />
         <Route path="/admin/login" element={<AdminLogin />} />
 
-        <Route path="/admin/dashboard" element={<AdminDashboardPage />} />
-        <Route path="/admin-users" element={<AdminDashboardUsers />} />
-        <Route path="/admin-sellers" element={<AdminDashboardSellers />} />
-        <Route path="/admin-orders" element={<AdminDashboardOrders />} />
-        <Route path="/admin-products" element={<AdminDashboardProducts />} />
-        <Route path="/admin-events" element={<AdminDashboardEvents />} />
+        <Route
+          path="/admin/dashboard"
+          element={
+            <ProtectedAdminRoute>
+              <AdminDashboardPage />
+            </ProtectedAdminRoute>
+          }
+        />
+        <Route
+          path="/admin-users"
+          element={
+            <ProtectedAdminRoute>
+              <AdminDashboardUsers />
+            </ProtectedAdminRoute>
+          }
+        />
+        <Route
+          path="/admin-sellers"
+          element={
+            <ProtectedAdminRoute>
+              <AdminDashboardSellers />
+            </ProtectedAdminRoute>
+          }
+        />
+        <Route
+          path="/admin-orders"
+          element={
+            <ProtectedAdminRoute>
+              <AdminDashboardOrders />
+            </ProtectedAdminRoute>
+          }
+        />
+        <Route
+          path="/admin-products"
+          element={
+            <ProtectedAdminRoute>
+              <AdminDashboardProducts />
+            </ProtectedAdminRoute>
+          }
+        />
+        <Route
+          path="/admin-events"
+          element={
+            <ProtectedAdminRoute>
+              <AdminDashboardEvents />
+            </ProtectedAdminRoute>
+          }
+        />
         <Route
           path="/admin/profile"
           element={
             // <ProtectedRoute>
-            <AdminSettingsPage />
+            <ProtectedAdminRoute>
+              <AdminSettingsPage />
+            </ProtectedAdminRoute>
             // </ProtectedRoute>
           }
         />
         <Route path="/admin/:id" element={<AdminHomePage />} />
         <Route
           path="/admin-withdraw-request"
-          element={<AdminDashboardWithdraw />}
+          element={
+            <ProtectedAdminRoute>
+              <AdminDashboardWithdraw />
+            </ProtectedAdminRoute>
+          }
         />
-        <Route path="/admin/promotional-coupan" element={<AdminCoupanPage />} />
+        <Route
+          path="/admin/promotional-coupan"
+          element={
+            <ProtectedAdminRoute>
+              <AdminCoupanPage />
+            </ProtectedAdminRoute>
+          }
+        />
       </Routes>
       <ToastContainer
         position="top-right"

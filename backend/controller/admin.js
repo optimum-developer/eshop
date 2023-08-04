@@ -223,11 +223,11 @@ router.put(
 // update user avatar
 router.put(
   "/update-avatar",
-  isAuthenticated,
+  isAdminAuthenticated,
   upload.single("image"),
   catchAsyncErrors(async (req, res, next) => {
     try {
-      const existsUser = await User.findById(req.user.id);
+      const existsUser = await Admin.findById(req.user.id);
 
       const existAvatarPath = `uploads/${existsUser.avatar}`;
 
@@ -235,7 +235,7 @@ router.put(
 
       const fileUrl = path.join(req.file.filename);
 
-      const user = await User.findByIdAndUpdate(req.user.id, {
+      const user = await Admin.findByIdAndUpdate(req.user.id, {
         avatar: fileUrl,
       });
 

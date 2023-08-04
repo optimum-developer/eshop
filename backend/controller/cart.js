@@ -73,12 +73,14 @@ router.put(
 
       const result = await Cart.updateOne(
         { "product._id": productId },
-        { $set: { "product.qty": qty } }
+        { $set: { "product.qty": qty } },
+        { new: true }
       );
-
+      const cartByUserId = await Cart.find({ userId: userId });
       res.status(200).json({
         success: true,
         message: "qty updated",
+        cartByUserId,
       });
     } catch (error) {
       return next(new ErrorHandler(error, 400));

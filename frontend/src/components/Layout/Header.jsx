@@ -47,7 +47,9 @@ const Header = ({ activeHeading }) => {
         product.name.toLowerCase().includes(term.toLowerCase())
       );
     setSearchData(filteredProducts);
-    console.log("length", filteredProducts.length);
+    console.log("search term length", searchTerm.length);
+
+    if (filteredProducts.length === 0) setSearchData(null);
   };
 
   window.addEventListener("scroll", () => {
@@ -58,10 +60,20 @@ const Header = ({ activeHeading }) => {
     }
   });
 
-  useEffect(() => {
-    // document.addEventListener("click", handleClickOutside, true);
-  }, []);
+  const handleClickOutside = (e) => {
+    if (!(searchRef.current === e.target)) {
+      setSearchData(null);
+      setSearchTerm("");
+    }
+  };
 
+  useEffect(() => {
+    document.addEventListener("click", handleClickOutside, true);
+    return () => {
+      document.removeEventListener("click", handleClickOutside, true);
+    };
+    // document.addEventListener("click",)
+  }, []);
   return (
     <>
       <div className={`${styles.section}`}>
@@ -92,6 +104,7 @@ const Header = ({ activeHeading }) => {
                 value={searchTerm}
                 onChange={handleSearchChange}
                 className="w-full"
+                ref={searchRef}
               />
               <AiOutlineSearch
                 size={30}

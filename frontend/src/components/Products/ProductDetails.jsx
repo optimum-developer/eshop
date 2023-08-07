@@ -32,7 +32,6 @@ const ProductDetails = ({ data }) => {
   const userId = user?._id;
   const cartProductList = items.map((el) => el.product);
   const wishlistProduct = wishlist.map((el) => el.product);
-  console.log(data?._id);
   useEffect(() => {
     dispatch(getAllProductsShop(data && data?.shop._id));
     dispatch(getAllOrdersOfAllUsers());
@@ -210,6 +209,7 @@ const ProductDetails = ({ data }) => {
                         className={`${
                           select === 0 ? "border" : "null"
                         } cursor-pointer`}
+                        key={index}
                       >
                         <img
                           src={`${backend_url}${i}`}

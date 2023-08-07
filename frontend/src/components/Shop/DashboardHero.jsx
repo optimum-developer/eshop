@@ -8,6 +8,7 @@ import { getAllOrdersOfShop } from "../../redux/actions/order";
 import { getAllProductsShop } from "../../redux/actions/product";
 import { Button } from "@material-ui/core";
 import { DataGrid } from "@material-ui/data-grid";
+import { BiSolidErrorAlt } from "react-icons/bi";
 
 const DashboardHero = () => {
   const dispatch = useDispatch();
@@ -87,15 +88,18 @@ const DashboardHero = () => {
       });
     });
   return (
-    <div className="w-full p-8">
+    <div className="w-full p-4">
       {(seller.approval === "pending" || seller.approval === "rejected") && (
         <div
-          className={`${
+          className={`flex items-center content-center gap-4 justify-center ${
             seller.approval === "rejected"
-              ? "border-2 border-rose-300 px-4 py-8 text-center mb-4 bg-red-100 text-rose-500"
-              : " border-2 border-yellow-400 px-4 py-8 text-center mb-4 bg-yellow-200 text-yellow-600"
+              ? "border border-[#d91d1d] px-4 py-6 text-center mb-4 bg-[#fdf3f6] text-[#d91d1d]"
+              : " border border-yellow-400 px-4 py-6 text-center mb-4 bg-yellow-200 text-yellow-600"
           }`}
         >
+          {seller.approval === "rejected" && (
+            <BiSolidErrorAlt size={24} color="#d91d1d" />
+          )}
           <h3>
             {seller.approval === "pending"
               ? "Your seller account is currently not approved by the admin"

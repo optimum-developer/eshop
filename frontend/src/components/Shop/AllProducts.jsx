@@ -65,7 +65,7 @@ const AllProducts = () => {
             <p
               className={`${
                 params.value === "approved" ? "bg-green-600" : "bg-red-400"
-              } h-8 w-20 flex justify-center items-center p-4 rounded-sm font-bold text-white`}
+              } h-8 w-32 flex justify-center items-center p-4 rounded-sm font-bold text-white`}
             >
               {params.value}
             </p>

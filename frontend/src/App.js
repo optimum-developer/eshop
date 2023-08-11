@@ -43,6 +43,7 @@ import {
   ShopSettingsPage,
   ShopWithDrawMoneyPage,
   ShopInboxPage,
+  ShopCreateVariant,
 } from "./routes/ShopRoutes";
 import {
   AdminDashboardPage,
@@ -167,6 +168,8 @@ const App = () => {
         {/* ---------------------Shop Routes --------------------------------*/}
         <Route path="/shop-create" element={<ShopCreatePage />} />
         <Route path="/shop-login" element={<ShopLoginPage />} />
+        <Route path="/shop-variant" element={<ShopCreateVariant />} />
+
         <Route
           path="/shop/:id"
           element={

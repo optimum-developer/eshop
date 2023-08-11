@@ -55,6 +55,8 @@ const CreateProduct = () => {
     e.preventDefault();
 
     let files = Array.from(e.target.files);
+    console.log("create product files", files);
+
     setImages((prevImages) => [...prevImages, ...files]);
   };
 

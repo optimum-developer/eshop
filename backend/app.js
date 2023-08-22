@@ -44,6 +44,7 @@ const withdraw = require("./controller/withdraw");
 const cart = require("./controller/cart");
 const wishlist = require("./controller/wishlist");
 const admin = require("./controller/admin");
+const variant = require('./controller/variant');
 
 app.use("/api/v2/user", user);
 app.use("/api/v2/conversation", conversation);
@@ -58,6 +59,7 @@ app.use("/api/v2/withdraw", withdraw);
 app.use("/api/v2/cart", cart);
 app.use("/api/v2/wishlist", wishlist);
 app.use("/api/v2/admin", admin);
+app.use("/api/v2/variant", variant);
 
 // it's for ErrorHandling
 app.use(ErrorHandler);

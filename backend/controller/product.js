@@ -8,6 +8,7 @@ const {
 const catchAsyncErrors = require('../middleware/catchAsyncErrors');
 const router = express.Router();
 const Product = require('../model/product');
+const Variant = require('../model/variant');
 const Order = require('../model/order');
 const Shop = require('../model/shop');
 const { upload } = require('../multer');
@@ -21,11 +22,13 @@ router.post(
 	upload.array('images'),
 	catchAsyncErrors(async (req, res, next) => {
 		try {
+			// console.log('body', req.body);
 			const shopId = req.body.shopId;
-			const { asin, images, variant } = req.body;
+			const { asin, images } = req.body;
+
 			console.log(typeof asin);
 			console.log({ asin });
-			console.log("variant--", variant)
+
 			const shop = await Shop.findById(shopId);
 			// let asinNo;
 			// const asinNo = await Product.findOne({ asin: asin });
@@ -39,7 +42,7 @@ router.post(
 				return next(new ErrorHandler('Shop Id is invalid!', 400));
 			} else {
 				const files = req.files;
-				console.log('FILES--', files);
+				// console.log('FILES--', files);
 
 				const imageUrls = files.map((file) => `${file.filename}`);
 
@@ -48,25 +51,17 @@ router.post(
 				productData.images = asin !== 'null' ? images : imageUrls;
 				productData.shop = shop;
 
-				productData.variant = JSON.parse(productData.variant);
-				console.log("variant", productData.variant.images)
-				// productData.variant.map((variantItem) => {
-				// 	variantItem.images.map((image) => {
-				// 		console.log("variant image", image)
-				// 	})
-				// 	});
-
-
-				// return
 				const product = await Product.create(productData);
 
+				console.log('product--', product);
+				console.log('product-id', product._id)
 				res.status(201).json({
 					success: true,
 					product,
 				});
 			}
 		} catch (error) {
-			console.log('catch error');
+			console.log('catch error', error);
 			return next(new ErrorHandler(error, 400));
 		}
 	})

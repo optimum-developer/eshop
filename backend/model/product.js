@@ -84,30 +84,30 @@ const productSchema = new mongoose.Schema({
 		type: String,
 		default: 'pending',
 	},
-	variant: [
-		{
-			size: {
-				type: String,
-			},
-			color: {
-				type: String,
-			},
-			price: {
-				type: Number,
-			},
-			discount: {
-				type: Number,
-			},
-			stock: {
-				type: Number,
-			},
-			images: [
-				{
-					type: String,
-				},
-			],
-		},
-	],
+	// variant: [
+	// 	{
+	// 		size: {
+	// 			type: String,
+	// 		},
+	// 		color: {
+	// 			type: String,
+	// 		},
+	// 		price: {
+	// 			type: Number,
+	// 		},
+	// 		discount: {
+	// 			type: Number,
+	// 		},
+	// 		stock: {
+	// 			type: Number,
+	// 		},
+	// 		images: [
+	// 			{
+	// 				type: String,
+	// 			},
+	// 		],
+	// 	},
+	// ],
 	createdAt: {
 		type: Date,
 		default: Date.now(),
